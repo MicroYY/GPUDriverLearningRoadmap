@@ -4,6 +4,15 @@
 
 围绕显存管理、调度、同步、显示输出和故障恢复做专题深挖。
 
+## 对应 roadmap 周次
+
+- 第 19 到 24 周
+
+## 对应实验
+
+- [Lab 2：跟踪一次 `ioctl` 调用路径](../../labs/lab-02-ioctl-tracing/README.md)
+- 其余内容当前更适合做专题笔记、日志分析或 capstone project。
+
 ## 专题方向
 
 - 显存管理：VRAM、GTT、页表、迁移、pin/unpin。

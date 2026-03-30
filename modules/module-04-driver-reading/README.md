@@ -4,6 +4,15 @@
 
 从公共框架过渡到具体驱动实现，形成稳定的源码阅读方法。
 
+## 对应 roadmap 周次
+
+- 第 13 到 18 周
+
+## 对应实验
+
+- [Lab 2：跟踪一次 `ioctl` 调用路径](../../labs/lab-02-ioctl-tracing/README.md)
+- [Lab 3：阅读一个 buffer object 的生命周期](../../labs/lab-03-bo-lifecycle/README.md)
+
 ## 建议顺序
 
 1. `vkms`

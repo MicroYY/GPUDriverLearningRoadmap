@@ -4,6 +4,16 @@
 
 理解一次图形调用是如何从用户态进入内核 DRM 驱动的。
 
+## 对应模块
+
+- [模块 4：真实驱动源码阅读](../../modules/module-04-driver-reading/README.md)
+- [模块 5：专题攻坚](../../modules/module-05-advanced-topics/README.md)
+
+## 建议对应周次
+
+- 第 13 到 18 周
+- 第 22 周可作为回顾型实验再做一次
+
 ## 任务
 
 1. 选择一个简单图形程序或示例。

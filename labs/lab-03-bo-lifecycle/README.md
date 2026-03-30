@@ -4,6 +4,16 @@
 
 通过追踪一个 buffer object 的创建、映射、使用和释放过程，理解显存管理在驱动中的基本实现方式。
 
+## 对应模块
+
+- [模块 3：Linux DRM/KMS 核心](../../modules/module-03-drm-kms/README.md)
+- [模块 4：真实驱动源码阅读](../../modules/module-04-driver-reading/README.md)
+
+## 建议对应周次
+
+- 第 11 周可先在公共层建立概念
+- 第 16 到 18 周可在真实驱动中再做一次
+
 ## 任务
 
 1. 选择一个驱动或 DRM 公共层中的 buffer object 路径。
