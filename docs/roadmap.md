@@ -12,23 +12,45 @@
 
 ## 如何阅读这份路线图
 
-这个仓库有三个互相关联但不相同的维度：
+这个仓库现在使用两个主维度：
 
 - `roadmap` 是时间维度，回答“第几周学什么”。
-- `modules` 是内容维度，回答“这些知识属于哪个课程单元”。
-- `labs` 是实践维度，回答“这一阶段要做什么实验来验证理解”。
+- `sessions` 是执行维度，把每个学习主题直接落成一个 session 文件。
 
-它们之间通常不是一一对应关系，而是：
+`labs` 继续保留，并且现在尽量做到“每个 session 对应一个单独 lab”，方便按周推进和复盘。
 
-- 一个模块会覆盖连续几周。
-- 一个实验会依附于某个模块。
-- 某些周以学习模块为主，某些周以完成实验和整理输出为主。
+## Session 映射总览
 
-详细的“周次 -> 模块 -> 实验 -> 输出”对应关系，统一放在下面的 `24 周执行表` 中，避免重复维护两份表格。
+| 周数 | Session | 学习主题 | 关联 Lab | 输出 |
+| --- | --- | --- | --- | --- |
+| 1 | [Session 01](../sessions/session-01-environment-and-stack/README.md) | 环境准备、图形栈总览 | [Lab 01](../labs/lab-01-environment-and-stack/README.md) | 环境文档和总览图 |
+| 2 | [Session 02](../sessions/session-02-c-and-kernel-structures/README.md) | C 和内核常见数据结构 | [Lab 02](../labs/lab-02-c-and-kernel-structures/README.md) | 结构体、链表、锁笔记 |
+| 3 | [Session 03](../sessions/session-03-virtual-memory-dma-iommu/README.md) | 虚拟内存、DMA、IOMMU | [Lab 03](../labs/lab-03-virtual-memory-dma-iommu/README.md) | 内存路径图 |
+| 4 | [Session 04](../sessions/session-04-pcie-interrupt-device-model/README.md) | PCIe、中断、设备模型 | [Lab 04](../labs/lab-04-pcie-interrupt-device-model/README.md) | 设备初始化流程图 |
+| 5 | [Session 05](../sessions/session-05-ioctl-mmap-driver-basics/README.md) | `ioctl`、`mmap`、驱动基础 | [Lab 05](../labs/lab-05-ioctl-mmap-driver-basics/README.md) | 调用链笔记 |
+| 6 | [Session 06](../sessions/session-06-graphics-pipeline/README.md) | GPU 图形流水线 | [Lab 06](../labs/lab-06-graphics-pipeline/README.md) | 流水线图 |
+| 7 | [Session 07](../sessions/session-07-compute-model-and-queues/README.md) | GPU 计算模型、User-Mode Queues | [Lab 07](../labs/lab-07-compute-model-and-queues/README.md) | command buffer 笔记 |
+| 8 | [Session 08](../sessions/session-08-mesa-libdrm-drm/README.md) | Mesa、libdrm、DRM 关系 | [Lab 08](../labs/lab-08-mesa-libdrm-drm/README.md) | 用户态图形栈总结 |
+| 9 | [Session 09](../sessions/session-09-drm-kms-object-model/README.md) | DRM/KMS 对象模型 | [Lab 09](../labs/lab-09-drm-kms-object-model/README.md) | 对象关系图 |
+| 10 | [Session 10](../sessions/session-10-atomic-modeset-and-igt/README.md) | Atomic modeset | [Lab 10](../labs/lab-10-atomic-modeset-and-igt/README.md) | IGT 测试与日志分析 |
+| 11 | [Session 11](../sessions/session-11-gem-ttm-dma-buf/README.md) | GEM、TTM、dma-buf | [Lab 11](../labs/lab-11-gem-ttm-dma-buf/README.md) | 显存管理对比 |
+| 12 | [Session 12](../sessions/session-12-fence-vblank-irq/README.md) | Fence、vblank、IRQ | [Lab 12](../labs/lab-12-fence-vblank-irq/README.md) | 同步机制笔记 |
+| 13 | [Session 13](../sessions/session-13-read-vkms/README.md) | `vkms` | [Lab 13](../labs/lab-13-read-vkms/README.md) | 驱动结构总结 |
+| 14 | [Session 14](../sessions/session-14-read-simpledrm/README.md) | `simpledrm` | [Lab 14](../labs/lab-14-read-simpledrm/README.md) | init 流程图 |
+| 15 | [Session 15](../sessions/session-15-read-msm-or-panfrost/README.md) | `msm` 或 `panfrost` | [Lab 15](../labs/lab-15-read-msm-or-panfrost/README.md) | 提交流程笔记 |
+| 16 | [Session 16](../sessions/session-16-read-i915-or-xe/README.md) | `i915` 或 `xe` | [Lab 16](../labs/lab-16-read-i915-or-xe/README.md) | 模块结构总结 |
+| 17 | [Session 17](../sessions/session-17-read-amdgpu-memory/README.md) | `amdgpu` 显存管理 | [Lab 17](../labs/lab-17-read-amdgpu-memory/README.md) | VM/BO 笔记 |
+| 18 | [Session 18](../sessions/session-18-read-amdgpu-submission/README.md) | `amdgpu` 命令提交和调度 | [Lab 18](../labs/lab-18-read-amdgpu-submission/README.md) | scheduler/fence 笔记 |
+| 19 | [Session 19](../sessions/session-19-page-fault-hang-reset/README.md) | page fault、hang、reset | [Lab 19](../labs/lab-19-page-fault-hang-reset/README.md) | 抓取与分析 GPU Hang dump |
+| 20 | [Session 20](../sessions/session-20-page-flip-and-display/README.md) | page flip、显示输出 | [Lab 20](../labs/lab-20-page-flip-and-display/README.md) | KMS/vblank 笔记 |
+| 21 | [Session 21](../sessions/session-21-trace-debugfs-perf/README.md) | trace、debugfs、perf | [Lab 21](../labs/lab-21-trace-debugfs-perf/README.md) | 一次调试记录 |
+| 22 | [Session 22](../sessions/session-22-end-to-end-ioctl-path/README.md) | 完整读一次 `ioctl` 路径 | [Lab 22](../labs/lab-22-end-to-end-ioctl-path/README.md) | 路径解剖笔记 |
+| 23 | [Session 23](../sessions/session-23-specialization/README.md) | 选方向深挖 | [Lab 23](../labs/lab-23-specialization/README.md) | 专题计划 |
+| 24 | [Session 24](../sessions/session-24-retrospective-and-next-plan/README.md) | 总结和复盘 | [Lab 24](../labs/lab-24-retrospective-and-next-plan/README.md) | 阶段总结 |
 
 ## 阶段划分
 
-### 第 1 周：环境准备
+### 第一阶段：Session 01 (环境准备)
 
 目标：把学习环境搭起来，后面所有实验都能重复。
 
@@ -42,7 +64,7 @@
 - 一张 Linux 图形栈总览图。
 - 一篇环境搭建笔记。
 
-### 第 2 到 5 周：补基础
+### 第二阶段：Session 02 到 05 (补基础)
 
 目标：补齐理解 GPU 驱动必须用到的系统基础。
 
@@ -58,16 +80,16 @@
 - 一篇 “用户态到内核态调用路径” 笔记。
 - 一篇 “DMA / IOMMU / 中断关系” 笔记。
 
-### 第 6 到 8 周：图形和 GPU 基础
+### 第三阶段：Session 06 到 08 (图形和 GPU 基础)
 
 目标：先搞清楚 GPU 到底在执行什么，以及驱动夹在中间扮演什么角色。
 
 重点内容：
 
 - 图形流水线：顶点、光栅化、片元、输出合并。
-- 计算模型：warp/wave、SIMD、SIMT、dispatch。
+- 计算模型：warp/wave、SIMD、SIMT、dispatch。**以及 User-Mode Queues (UMQs) 概念。**
 - 图形 API 和驱动关系：OpenGL、Vulkan、EGL、GBM、DRM。
-- `command buffer`、`ring buffer`、`queue`、`doorbell`。
+- `command buffer`、`ring buffer`、`queue`、`doorbell` **(重点理解不同 Ring：Graphics / Compute / Copy 的差异)**。
 - VRAM、GTT、system memory、BAR 映射。
 
 建议输出：
@@ -75,7 +97,7 @@
 - 一篇 “GPU 执行模型速记”。
 - 一篇 “OpenGL/Vulkan 到内核驱动的数据路径”。
 
-### 第 9 到 12 周：Linux DRM/KMS 核心
+### 第四阶段：Session 09 到 12 (Linux DRM/KMS 核心)
 
 目标：掌握 Linux GPU 驱动最重要的公共框架。
 
@@ -100,8 +122,9 @@
 - 一张 DRM/KMS 对象关系图。
 - 一篇 GEM / TTM / dma-buf 对比笔记。
 - 一篇 atomic modeset 流程笔记。
+- 一次 IGT (igt-gpu-tools) 构建与基础测试运行记录。
 
-### 第 13 到 18 周：开始读真实驱动
+### 第五阶段：Session 13 到 18 (开始读真实驱动)
 
 目标：从 “知道框架” 过渡到 “能看懂驱动实现”。
 
@@ -126,7 +149,7 @@
 - 每个驱动一份结构总结。
 - 每个驱动一张 “初始化 -> 提交 -> 完成” 的流程图。
 
-### 第 19 到 22 周：专题攻坚
+### 第六阶段：Session 19 到 22 (专题攻坚)
 
 目标：把几个最难也最重要的模块单独吃透。
 
@@ -144,7 +167,7 @@
 - 每个专题一篇问题清单式笔记。
 - 至少做一次真实日志分析。
 
-### 第 23 到 24 周：选择方向继续深入
+### 第七阶段：Session 23 到 24 (选择方向继续深入)
 
 你可以按兴趣选择一个方向深挖：
 
@@ -158,35 +181,6 @@
 
 - 一篇个人阶段总结。
 - 一份下一阶段 8 周计划。
-
-## 24 周执行表
-
-| 周数 | 主题 | 对应模块 | 对应实验 | 输出 |
-| --- | --- | --- | --- | --- |
-| 1 | 环境准备、图形栈总览 | 模块 1 | Lab 1 | 环境文档和总览图 |
-| 2 | C 和内核常见数据结构 | 模块 1 | Lab 1 | 结构体、链表、锁笔记 |
-| 3 | 虚拟内存、DMA、IOMMU | 模块 1 | Lab 1 | 内存路径图 |
-| 4 | PCIe、中断、设备模型 | 模块 1 | Lab 1 | 设备初始化流程图 |
-| 5 | `ioctl`、`mmap`、驱动基础 | 模块 1 | Lab 1 | 调用链笔记 |
-| 6 | GPU 图形流水线 | 模块 2 | 暂无独立 lab | 流水线图 |
-| 7 | GPU 计算模型、命令提交流程 | 模块 2 | 暂无独立 lab | command buffer 笔记 |
-| 8 | Mesa、libdrm、DRM 关系 | 模块 2 | 暂无独立 lab | 用户态图形栈总结 |
-| 9 | DRM/KMS 对象模型 | 模块 3 | 暂无独立 lab | 对象关系图 |
-| 10 | Atomic modeset | 模块 3 | 暂无独立 lab | 流程笔记 |
-| 11 | GEM、TTM、dma-buf | 模块 3 | Lab 3 | 显存管理对比 |
-| 12 | Fence、vblank、IRQ | 模块 3 | 暂无独立 lab | 同步机制笔记 |
-| 13 | `vkms` | 模块 4 | Lab 2 | 驱动结构总结 |
-| 14 | `simpledrm` | 模块 4 | Lab 2 | init 流程图 |
-| 15 | `msm` 或 `panfrost` | 模块 4 | Lab 2 | 提交流程笔记 |
-| 16 | `i915` 或 `xe` | 模块 4 | Lab 3 | 模块结构总结 |
-| 17 | `amdgpu` 显存管理 | 模块 4 | Lab 3 | VM/BO 笔记 |
-| 18 | `amdgpu` 命令提交和调度 | 模块 4 | Lab 2、Lab 3 | scheduler/fence 笔记 |
-| 19 | page fault、hang、reset | 模块 5 | 暂无独立 lab | 故障恢复笔记 |
-| 20 | page flip、显示输出 | 模块 5 | 暂无独立 lab | KMS/vblank 笔记 |
-| 21 | trace、debugfs、perf | 模块 5 | 暂无独立 lab | 一次调试记录 |
-| 22 | 完整读一次 `ioctl` 路径 | 模块 5 | Lab 2 | 路径解剖笔记 |
-| 23 | 选方向深挖 | 模块 5 | 专题 project / capstone | 专题计划 |
-| 24 | 总结和复盘 | 模块 5 | 专题 project / capstone | 阶段总结 |
 
 ## 推荐源码阅读顺序
 

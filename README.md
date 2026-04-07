@@ -1,16 +1,14 @@
 # GPU Driver Learning Roadmap
 
-一个面向自学者和工程师的 GPU 驱动课程型仓库，采用“课程模块 + lab + 笔记 + 图示”的组织方式，帮助你系统学习 Linux GPU 驱动栈，并逐步过渡到真实驱动源码阅读与实验。
+一个面向自学者和工程师的 GPU 驱动课程型仓库，采用“roadmap + sessions + labs”的组织方式，帮助你系统学习 Linux GPU 驱动栈，并逐步过渡到真实驱动源码阅读与实验。
 
 ## 这个仓库是做什么的
 
-这个仓库不是单纯的一篇学习笔记，而是一套可持续扩展的学习工作区：
+这个仓库不是单纯的一篇学习笔记，而是一套以 session 为核心的学习工作区：
 
-- `modules/` 提供按主题组织的课程内容。
+- `docs/` 保存序言、路线图、阅读清单和模板。
+- `sessions/` 把 roadmap 里的每个学习主题直接映射成一个 session。
 - `labs/` 提供配套实验任务，帮助把概念变成可验证的理解。
-- `notes/` 用来记录每周学习笔记、源码解读和问题清单。
-- `diagrams/` 用来沉淀对象关系图、流程图和数据路径图。
-- `docs/` 保存序言、长期路线图和其他说明性文档。
 
 ## 适合谁
 
@@ -24,31 +22,33 @@
 - 看懂 DRM/KMS 的常见对象和关键数据流。
 - 读懂简单 GPU 驱动的初始化、buffer 管理和命令提交流程。
 - 对 `i915/xe`、`amdgpu`、`msm`、`panfrost` 这类真实驱动有明确切入点。
+- 熟练使用 IGT (igt-gpu-tools) 进行内核驱动测试，并能分析常见 GPU Hang 和 Reset 的错误日志。
 
 ## 仓库结构
 
 ```text
 .
+├─ .gitignore
+├─ LICENSE
+├─ CONTRIBUTING.md
 ├─ README.md
 ├─ docs/
 │  ├─ preface.md
-│  └─ roadmap.md
-├─ modules/
+│  ├─ roadmap.md
+│  ├─ reading_checklist.md
+│  └─ weekly-template.md
+├─ sessions/
 │  ├─ README.md
-│  ├─ module-01-foundations/
-│  ├─ module-02-gpu-basics/
-│  ├─ module-03-drm-kms/
-│  ├─ module-04-driver-reading/
-│  └─ module-05-advanced-topics/
+│  ├─ session-01-environment-and-stack.md
+│  ├─ session-02-c-and-kernel-structures.md
+│  ├─ ...
+│  └─ session-24-retrospective-and-next-plan.md
 ├─ labs/
 │  ├─ README.md
-│  ├─ lab-01-environment/
-│  ├─ lab-02-ioctl-tracing/
-│  └─ lab-03-bo-lifecycle/
-├─ notes/
-│  └─ README.md
-└─ diagrams/
-   └─ README.md
+│  ├─ lab-01-environment-and-stack/
+│  ├─ lab-02-c-and-kernel-structures/
+│  ├─ ...
+│  └─ lab-24-retrospective-and-next-plan/
 ```
 
 ## 从哪里开始
@@ -57,42 +57,53 @@
 
 1. 先读 [序言](docs/preface.md)，了解学习目标和方法。
 2. 再读 [长期路线图](docs/roadmap.md)，建立 24 周整体地图。
-3. 从 [课程模块导航](modules/README.md) 开始，按模块推进。
-4. 每学完一个模块，配套完成对应 lab。
-5. 把输出整理到 `notes/` 和 `diagrams/` 中。
+3. 从 [Session 导航](sessions/README.md) 开始，按顺序推进。
+4. 在对应时间窗口完成配套 lab。
+5. 用 [每周复盘模板](docs/weekly-template.md) 记录自己的输出。
 
-## 课程模块
+## Sessions
 
-- [模块 1：基础准备](modules/module-01-foundations/README.md)
-- [模块 2：GPU 与图形基础](modules/module-02-gpu-basics/README.md)
-- [模块 3：Linux DRM/KMS 核心](modules/module-03-drm-kms/README.md)
-- [模块 4：真实驱动源码阅读](modules/module-04-driver-reading/README.md)
-- [模块 5：专题攻坚](modules/module-05-advanced-topics/README.md)
+- [Session 导航](sessions/README.md)
+- [Session 01：环境准备与图形栈总览](sessions/session-01-environment-and-stack/README.md)
+- [Session 10：Atomic modeset 与 IGT 基础](sessions/session-10-atomic-modeset-and-igt/README.md)
+- [Session 13：阅读 `vkms`](sessions/session-13-read-vkms/README.md)
+- [Session 19：Page fault、Hang 与 Reset](sessions/session-19-page-fault-hang-reset/README.md)
 
 ## 实验导航
 
-- [Lab 1：环境准备与源码工作区](labs/lab-01-environment/README.md)
-- [Lab 2：跟踪一次 `ioctl` 调用路径](labs/lab-02-ioctl-tracing/README.md)
-- [Lab 3：阅读一个 buffer object 的生命周期](labs/lab-03-bo-lifecycle/README.md)
+lab 现在按 session 一一对应组织，建议直接从总索引进入：
+
+- [Lab 导航](labs/README.md)
+- Session 01 对应 Lab 01
+- Session 02 对应 Lab 02
+- ...
+- Session 24 对应 Lab 24
 
 ## 推荐学习方式
+**💡 关于 Lab 的定义（打破“必须写代码才算实验”的误区）：**
+在这个实战框架下，并非每一周都要去编译内核模块。我们将以下形式均视为闭环的 Lab 产出：
+1. **代码实验 (Coding Lab)**：如编写简单的 char device、调用 `ioctl`、修改 `vkms` 等。
+2. **追踪实验 (Trace Lab)**：使用 `ftrace`/`bpftrace` 验证从用户态到 `drm_ioctl` 的真实执行路径。
+3. **图解实验 (Diagram Lab)**：不写代码，但通过通读关键源码文件，绘制出 DRM 核心对象的关系图或生命周期状态机。
+4. **调试实验 (Debug Lab)**：编译并运行 IGT (igt-gpu-tools) 跑出 pass/fail 结果，或去 `/sys/kernel/debug/dri/` 下观察 GPU 状态节点。
 
-- 每周安排固定时间读模块内容。
+
+- 每周安排固定时间读一个或多个 session。
 - 每周至少完成一个小输出：笔记、图、源码路径追踪或实验记录。
 - 不要把 lab 当作附属品，lab 才是把“知道”变成“会”的关键。
 
 ## 当前状态
 
-当前仓库已经完成第一版骨架，后续可以继续补充：
+当前仓库已经切换到 session 主导的结构，后续执行时可以使用以下辅助文档来驱动学习并检验产出进度：
 
-- 每个模块的详细讲义
-- 每个 lab 的验收标准和参考输出
-- 每周笔记模板
-- 图示模板和源码阅读 checklist
+- [📝 源码阅读核心 Checklist: `docs/reading_checklist.md`](docs/reading_checklist.md) - 在迷失在代码海前，看看这 8 个必须回答的硬核问题。
+- [📆 本周学习与代码复盘笔记模板: `docs/weekly-template.md`](docs/weekly-template.md) - 每周把你的实验、路径追踪和问题清单写下来。
 
 ## 相关文档
 
 - [docs/preface.md](docs/preface.md)
 - [docs/roadmap.md](docs/roadmap.md)
-- [modules/README.md](modules/README.md)
+- [docs/reading_checklist.md](docs/reading_checklist.md)
+- [docs/weekly-template.md](docs/weekly-template.md)
+- [sessions/README.md](sessions/README.md)
 - [labs/README.md](labs/README.md)

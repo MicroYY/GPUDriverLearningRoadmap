@@ -1,0 +1,38 @@
+# Linux Kernel & C
+*.o
+*.ko
+*.obj
+*.elf
+*.bin
+*.out
+*.a
+*.so
+*.su
+
+# Build directories
+build/
+out/
+bin/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+compile_commands.json
+
+# ctags / cscope
+tags
+TAGS
+cscope.*
+
+# Python (if scripts are added later)
+__pycache__/
+*.pyc
+.env
+venv/
+
+# Documentation builds
+docs/_build/
+site/
