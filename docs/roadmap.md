@@ -19,6 +19,47 @@
 
 `labs` 继续保留，并且现在尽量做到“每个 session 对应一个单独 lab”，方便按周推进和复盘。
 
+## 建议环境
+
+推荐直接准备下面两类环境之一：
+
+- 原生 Linux 测试机
+- QEMU Linux 虚拟机
+
+这两类环境最适合完成这套课程里的源码阅读、KMS/DRM 实验、IGT、`debugfs`、`trace`、`perf` 和日志抓取。
+
+需要注意的是，普通 QEMU 更适合承担通用 Linux 图形栈、`virtio-gpu`、`vkms` 相关实验，不等于自动拥有 `amdgpu`、`i915/xe`、`msm`、`panfrost` 这些真实目标驱动的完整实验条件。
+
+## QEMU 适配范围
+
+| Session | QEMU 适配度 | 说明 |
+| --- | --- | --- |
+| Session 01-08 | 可完成 | 这一段以概念建立、源码阅读、最小示例和分层理解为主。 |
+| Session 09-10 | 可完成 | 配合 `vkms` 可做 KMS 对象观察、atomic modeset 和 IGT 基础实验。 |
+| Session 11-14 | 可完成 | 通用 DRM/GEM/KMS 路径阅读和 `vkms` / `simpledrm` 相关内容适合在 QEMU 中推进。 |
+| Session 15-18 | 部分可完成 | 可以做源码阅读和路径分析，但普通 QEMU 不提供 `msm`、`panfrost`、`i915/xe`、`amdgpu` 这些目标驱动的真实实验环境。 |
+| Session 19 | 不建议仅用 QEMU | hang、reset、page fault 这类故障恢复主题更适合真实硬件和真实驱动环境。 |
+| Session 20 | 部分可完成 | 可以学习 page flip、KMS 和 vblank 的通用路径，但真实显示链路验证能力有限。 |
+| Session 21 | 部分可完成 | 通用 `trace`、`debugfs`、`perf` 可以做，但真实 GPU 专有节点和问题场景不足。 |
+| Session 22 | 可完成 | 静态路径分析和部分运行验证可以在 QEMU 中完成。 |
+| Session 23-24 | 可完成 | 主要是总结、选题和制定下一阶段计划。 |
+
+## WSL2 适配范围
+
+- Session 01 到 Session 08 基本可以正常学习，因为这一段以概念建立、源码阅读、最小示例和分层理解为主。
+- Session 09 会在 `modetest` 和真实 KMS 对象观察上受限。
+- Session 10 会在 `vkms`、IGT 和 `dmesg` 观察上明显受限。
+- Session 12 会在 vblank / IRQ / fence 的运行时验证上受限。
+- Session 19 会在 hang / reset 日志抓取和故障恢复观察上受限。
+- Session 20 会在 page flip、显示输出和 vblank 观察上受限。
+- Session 21 会在 DRM 相关 `debugfs`、trace、`perf` 实验上受限。
+- Session 22 如果你想做一次带运行验证的完整 `ioctl` 路径跟踪，也会受限。
+
+结论很简单：
+
+- 只想先学路线、读源码、记笔记，WSL2 可以用。
+- 想把这套课程后半段的大多数 lab 认真做完，建议一开始就用原生 Linux 或 QEMU。
+
 ## Session 映射总览
 
 | 周数 | Session | 学习主题 | 关联 Lab | 输出 |
