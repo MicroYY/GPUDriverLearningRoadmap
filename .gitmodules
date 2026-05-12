@@ -1,0 +1,20 @@
+[submodule "sources/linux"]
+	path = sources/linux
+	url = https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+	branch = master
+	shallow = true
+[submodule "sources/mesa"]
+	path = sources/mesa
+	url = https://gitlab.freedesktop.org/mesa/mesa.git
+	branch = main
+	shallow = true
+[submodule "sources/libdrm"]
+	path = sources/libdrm
+	url = https://gitlab.freedesktop.org/mesa/drm.git
+	branch = main
+	shallow = true
+[submodule "sources/igt-gpu-tools"]
+	path = sources/igt-gpu-tools
+	url = https://gitlab.freedesktop.org/drm/igt-gpu-tools.git
+	branch = master
+	shallow = true

@@ -63,9 +63,54 @@
 
 1. 先读 [序言](docs/preface.md)，了解学习目标和方法。
 2. 再读 [长期路线图](docs/roadmap.md)，建立 24 周整体地图。
-3. 从 [Session 导航](sessions/README.md) 开始，按顺序推进。
-4. 在对应时间窗口完成配套 lab。
-5. 用 [每周复盘模板](docs/weekly-template.md) 记录自己的输出。
+3. 初始化源码 submodule，把 Linux、Mesa、`libdrm` 和 IGT 准备到本地。
+4. 从 [Session 导航](sessions/README.md) 开始，按顺序推进。
+5. 在对应时间窗口完成配套 lab。
+6. 用 [每周复盘模板](docs/weekly-template.md) 记录自己的输出。
+
+## 源码准备
+
+上游源码不直接提交到本仓库，而是通过 Git submodule 固定在 `sources/` 目录中。主仓库只记录外部仓库的 URL 和 commit，源码内容仍然来自各自上游仓库。
+
+首次 clone 时可以直接带上 submodule：
+
+```bash
+git clone --recurse-submodules --shallow-submodules <this-repo-url>
+```
+
+如果已经 clone 了本仓库，再初始化源码：
+
+```bash
+git submodule update --init --depth 1 --filter=blob:none
+```
+
+这会准备下面几个源码目录：
+
+- `sources/linux`：Linux kernel，建议配合 GPU 学习相关的 sparse checkout。
+- `sources/mesa`：Mesa 用户态图形驱动。
+- `sources/libdrm`：DRM 用户态 ioctl 封装库。
+- `sources/igt-gpu-tools`：DRM/KMS 测试工具。
+
+如果暂时不想下载 Linux kernel，可以先只初始化较小的用户态仓库：
+
+```bash
+git submodule update --init --depth 1 --filter=blob:none sources/mesa sources/libdrm sources/igt-gpu-tools
+```
+
+需要更新到上游新版本时：
+
+```bash
+git submodule update --remote --depth 1 --filter=blob:none
+git add .gitmodules sources/linux sources/mesa sources/libdrm sources/igt-gpu-tools
+git commit -m "Update source submodules"
+```
+
+Windows 原生文件系统对大小写不敏感，完整 checkout Linux kernel 时可能遇到少量非 GPU 目录的大小写冲突警告。建议优先在 WSL/Linux 文件系统中初始化 `sources/linux`。如果已经在 Windows 原生目录中初始化，可以把 Linux submodule 调成 GPU 学习用 sparse checkout：
+
+```bash
+git -C sources/linux sparse-checkout init --cone
+git -C sources/linux sparse-checkout set Documentation/gpu drivers/base drivers/dma-buf drivers/gpu drivers/iommu drivers/pci include/drm include/linux include/uapi/drm kernel/dma kernel/irq mm
+```
 
 ## Sessions
 
