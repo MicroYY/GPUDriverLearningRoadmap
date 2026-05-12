@@ -118,14 +118,65 @@ flowchart TD
 - 这个逻辑属于用户态，还是内核态？
 - 这是公共 DRM/KMS 逻辑，还是某个驱动自己的实现？
 
-### 8. 本节还没展开，但后面一定会遇到的问题
+### 8. 这些问题会在哪些后续 session 展开
 
-这些问题在后面 session 会继续展开，本节先知道位置就够了：
+这一节只先把问题挂在图上，真正展开要去后面的 session 看：
 
-- `DRM` 和 `KMS` 的对象到底有哪些
+- `DRM` 和 `KMS` 的对象有哪些
+  重点看 Session 09。
 - `ioctl` 请求是怎么被 DRM core 分发的
+  先看 Session 05，再看 Session 22。
 - buffer object、GEM、TTM 分别是什么
-- page flip、vblank、fence 在系统里分别扮演什么角色
+  重点看 Session 11，后面在 Session 16 到 18 里会结合真实驱动继续出现。
+- page flip、vblank、fence 分别扮演什么角色
+  先看 Session 12，再看 Session 20。
+
+### 9. 用几条命令把地图落到本机上
+
+如果你在 Linux 环境里学习，可以先用命令把上面的分层和真实系统对应起来。
+
+查看 DRM 设备节点：
+
+```bash
+ls -l /dev/dri/
+```
+
+你可能会看到：
+
+```text
+card0
+renderD128
+```
+
+可以先这样理解：
+
+- `card0` 更接近完整 DRM 设备节点，常用于 KMS/display 控制。
+- `renderD128` 更适合普通渲染/计算提交，不提供 modeset 控制能力。
+
+查看当前加载的 GPU/DRM 驱动：
+
+```bash
+lspci -k | grep -A3 -E "VGA|3D|Display"
+lsmod | grep -E "amdgpu|i915|xe|nouveau|msm|panfrost|vkms|drm"
+```
+
+查看 Mesa 用户态信息：
+
+```bash
+glxinfo -B
+vulkaninfo --summary
+```
+
+如果命令不存在，不需要在第一节卡住。先记录缺什么工具，后面环境 lab 再补齐。这里的关键是建立对应关系：
+
+```text
+/dev/dri/renderD*  -> 用户态提交渲染/计算的入口
+/dev/dri/card*     -> KMS/display 控制入口
+lsmod              -> 当前内核里有哪些 DRM/GPU 模块
+glxinfo/vulkaninfo -> 用户态 Mesa/Vulkan 栈看到的 GPU 能力
+```
+
+完成这一步后，图形栈不再只是图，而是能和你机器上的设备节点、模块和用户态工具对应起来。
 
 ## 完成标准
 

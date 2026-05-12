@@ -2,6 +2,8 @@
 
 这个仓库现在以 session 为主组织学习内容。你可以把每个 session 理解成一周或一个明确主题块的学习单元。
 
+每个 session 的职责是回答“这一周要理解什么、读哪些入口、最后应该能解释什么”。真正动手、追路径、跑命令或整理证据时，进入同号 lab。
+
 ## 推荐顺序
 
 1. [Session 01：环境准备与图形栈总览](session-01-environment-and-stack/README.md)
@@ -32,5 +34,12 @@
 ## 使用方式
 
 - 先看 [docs/roadmap.md](../docs/roadmap.md)，再按 session 顺序推进。
-- 需要动手时，进入对应 lab。
+- 需要动手时，进入同号 lab，例如 Session 09 对应 Lab 09。
 - 每完成一个 session，用 [docs/weekly-template.md](../docs/weekly-template.md) 记一次复盘。
+- 如果某个 session 需要真实硬件或只适合源码阅读，优先参考 [docs/roadmap.md](../docs/roadmap.md) 的环境标签。
+
+## 建议阅读节奏
+
+1. 先读“目标”和“核心问题”，确认这一节要解决的主线。
+2. 再看“建议输出”，把输出当作本周验收标准。
+3. 最后打开关联 lab，把输出落成笔记、图、源码路径或运行记录。

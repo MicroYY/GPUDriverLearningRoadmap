@@ -63,6 +63,46 @@ sudo apt install -y clangd ctags ripgrep gdb linux-tools-generic
 
 安装完成后，至少确认后面可以用它们做搜索、跳转、调试和观察。
 
+### 4. 观察本机图形栈
+
+如果当前环境是 Linux，记录下面几组命令输出：
+
+```bash
+ls -l /dev/dri/
+lspci -k | grep -A3 -E "VGA|3D|Display"
+lsmod | grep -E "amdgpu|i915|xe|nouveau|msm|panfrost|vkms|drm"
+```
+
+如果安装了 Mesa / Vulkan 工具，也记录：
+
+```bash
+glxinfo -B
+vulkaninfo --summary
+```
+
+如果命令不存在，不需要卡住；在记录里写清楚缺少哪个工具，以及后面是否需要补装。
+
+### 5. 画第一张总览图
+
+用自己的方式画一张从应用到硬件的路径图，至少包含：
+
+- 应用 / API
+- Mesa
+- `libdrm`
+- `/dev/dri/card*` 或 `/dev/dri/renderD*`
+- DRM/KMS core
+- 具体驱动
+- GPU 或显示硬件
+
+这张图会在后面反复修正，不要求第一次就完美。
+
+## 交付物
+
+- 环境记录
+- 图形栈总览图
+- 源码工作区路径
+- 已安装工具清单
+
 ## 检查项
 
 - [ ] 已经确定主学习环境
@@ -74,5 +114,9 @@ sudo apt install -y clangd ctags ripgrep gdb linux-tools-generic
 - [ ] 已经安装 `ripgrep`
 - [ ] 已经安装 `gdb`
 - [ ] 已经安装 `perf`
-- [ ] 已经完成图形栈总览图
-- [ ] 已经完成环境说明文档
+- [ ] 已经记录 `/dev/dri/` 或说明当前环境为什么没有
+- [ ] 已经画出第一张图形栈总览图
+
+## 完成标准
+
+- 你能在自己的机器或虚拟机上指出用户态源码、内核源码、DRM 设备节点和当前 GPU/DRM 模块分别在哪里。

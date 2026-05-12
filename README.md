@@ -1,14 +1,14 @@
 # GPU Driver Learning Roadmap
 
-一个面向自学者和工程师的 GPU 驱动课程型仓库，采用“roadmap + sessions + labs”的组织方式，帮助你系统学习 Linux GPU 驱动栈，并逐步过渡到真实驱动源码阅读与实验。
+一个面向自学者和工程师的 GPU 驱动课程型仓库，采用“roadmap + sessions + labs”的组织方式，帮助你系统学习 Linux GPU 驱动栈，并逐步过渡到真实驱动源码阅读、运行时观察和实验复盘。
 
 ## 这个仓库是做什么的
 
-这个仓库不是单纯的一篇学习笔记，而是一套以 session 为核心的学习工作区：
+这个仓库不是单纯的一篇学习笔记，而是一套以 session 为核心的学习工作区。它把 24 周路线拆成可执行的学习单元，每个单元都有对应 lab，用来把概念、源码路径和实验记录连起来。
 
-- `docs/` 保存序言、路线图、阅读清单和模板。
-- `sessions/` 把 roadmap 里的每个学习主题直接映射成一个 session。
-- `labs/` 提供配套实验任务，帮助把概念变成可验证的理解。
+- `docs/` 保存序言、路线图、源码阅读清单和每周复盘模板。
+- `sessions/` 把 roadmap 里的每个学习主题映射成一个课程单元。
+- `labs/` 提供同号实验任务，帮助把“看懂”变成“能验证、能复盘”。
 
 ## 适合谁
 
@@ -39,16 +39,22 @@
 │  └─ weekly-template.md
 ├─ sessions/
 │  ├─ README.md
-│  ├─ session-01-environment-and-stack.md
-│  ├─ session-02-c-and-kernel-structures.md
+│  ├─ session-01-environment-and-stack/
+│  │  └─ README.md
+│  ├─ session-02-c-and-kernel-structures/
+│  │  └─ README.md
 │  ├─ ...
-│  └─ session-24-retrospective-and-next-plan.md
+│  └─ session-24-retrospective-and-next-plan/
+│     └─ README.md
 ├─ labs/
 │  ├─ README.md
 │  ├─ lab-01-environment-and-stack/
+│  │  └─ README.md
 │  ├─ lab-02-c-and-kernel-structures/
+│  │  └─ README.md
 │  ├─ ...
 │  └─ lab-24-retrospective-and-next-plan/
+│     └─ README.md
 ```
 
 ## 从哪里开始
@@ -80,24 +86,22 @@ lab 现在按 session 一一对应组织，建议直接从总索引进入：
 - Session 24 对应 Lab 24
 
 ## 推荐学习方式
-**💡 关于 Lab 的定义（打破“必须写代码才算实验”的误区）：**
-在这个实战框架下，并非每一周都要去编译内核模块。我们将以下形式均视为闭环的 Lab 产出：
-1. **代码实验 (Coding Lab)**：如编写简单的 char device、调用 `ioctl`、修改 `vkms` 等。
-2. **追踪实验 (Trace Lab)**：使用 `ftrace`/`bpftrace` 验证从用户态到 `drm_ioctl` 的真实执行路径。
-3. **图解实验 (Diagram Lab)**：不写代码，但通过通读关键源码文件，绘制出 DRM 核心对象的关系图或生命周期状态机。
-4. **调试实验 (Debug Lab)**：编译并运行 IGT (igt-gpu-tools) 跑出 pass/fail 结果，或去 `/sys/kernel/debug/dri/` 下观察 GPU 状态节点。
 
+Lab 不等于“每周都必须写内核模块”。在这套课程里，只要能留下可复查的证据，下面几类都算有效 lab：
 
-- 每周安排固定时间读一个或多个 session。
-- 每周至少完成一个小输出：笔记、图、源码路径追踪或实验记录。
-- 不要把 lab 当作附属品，lab 才是把“知道”变成“会”的关键。
+1. 代码实验：编写最小用户态程序、调用 `ioctl`、修改或加载 `vkms`。
+2. 路径追踪：用源码、`ftrace`、`bpftrace` 或日志追一次真实调用链。
+3. 对象解剖：阅读关键结构体，画出对象关系、生命周期或状态流转。
+4. 调试记录：运行 IGT、观察 `debugfs`、分析 `dmesg` 或 perf/trace 输出。
+
+建议每周按同一个节奏推进：先读 session，明确问题；再做同号 lab，留下证据；最后用复盘模板记录“我现在能解释什么、还卡在哪里”。
 
 ## 当前状态
 
 当前仓库已经切换到 session 主导的结构，后续执行时可以使用以下辅助文档来驱动学习并检验产出进度：
 
-- [📝 源码阅读核心 Checklist: `docs/reading_checklist.md`](docs/reading_checklist.md) - 在迷失在代码海前，看看这 8 个必须回答的硬核问题。
-- [📆 本周学习与代码复盘笔记模板: `docs/weekly-template.md`](docs/weekly-template.md) - 每周把你的实验、路径追踪和问题清单写下来。
+- [源码阅读 Checklist](docs/reading_checklist.md)：进入陌生驱动目录时，用它快速找到入口、对象、提交、同步和调试线索。
+- [每周复盘模板](docs/weekly-template.md)：每周把实验、路径追踪、问题清单和下一步计划写下来。
 
 ## 相关文档
 
