@@ -79,30 +79,30 @@
 
 | 周数 | Session | 学习主题 | 关联 Lab | 环境 | 输出 |
 | --- | --- | --- | --- | --- | --- |
-| 1 | [Session 01](../sessions/session-01-environment-and-stack/README.md) | 环境准备、图形栈总览 | [Lab 01](../labs/lab-01-environment-and-stack/README.md) | QEMU 可完成 | 环境记录和总览图 |
-| 2 | [Session 02](../sessions/session-02-c-and-kernel-structures/README.md) | C 和内核常见数据结构 | [Lab 02](../labs/lab-02-c-and-kernel-structures/README.md) | 源码可完成 | 结构体、链表、锁笔记 |
-| 3 | [Session 03](../sessions/session-03-virtual-memory-dma-iommu/README.md) | 虚拟内存、DMA、IOMMU | [Lab 03](../labs/lab-03-virtual-memory-dma-iommu/README.md) | 源码可完成 | 内存路径图 |
-| 4 | [Session 04](../sessions/session-04-pcie-interrupt-device-model/README.md) | PCIe、中断、设备模型 | [Lab 04](../labs/lab-04-pcie-interrupt-device-model/README.md) | 源码可完成 | 设备初始化流程图 |
-| 5 | [Session 05](../sessions/session-05-ioctl-mmap-driver-basics/README.md) | `ioctl`、`mmap`、驱动基础 | [Lab 05](../labs/lab-05-ioctl-mmap-driver-basics/README.md) | QEMU 可完成 | 调用链笔记 |
-| 6 | [Session 06](../sessions/session-06-graphics-pipeline/README.md) | GPU 图形流水线 | [Lab 06](../labs/lab-06-graphics-pipeline/README.md) | 源码可完成 | 流水线图 |
-| 7 | [Session 07](../sessions/session-07-compute-model-and-queues/README.md) | GPU 计算模型、User-Mode Queues | [Lab 07](../labs/lab-07-compute-model-and-queues/README.md) | 源码可完成 | command buffer 笔记 |
-| 8 | [Session 08](../sessions/session-08-mesa-libdrm-drm/README.md) | Mesa、libdrm、DRM 关系 | [Lab 08](../labs/lab-08-mesa-libdrm-drm/README.md) | 源码可完成 | 用户态图形栈总结 |
-| 9 | [Session 09](../sessions/session-09-drm-kms-object-model/README.md) | DRM/KMS 对象模型 | [Lab 09](../labs/lab-09-drm-kms-object-model/README.md) | QEMU 可完成 | 对象关系图 |
-| 10 | [Session 10](../sessions/session-10-atomic-modeset-and-igt/README.md) | Atomic modeset | [Lab 10](../labs/lab-10-atomic-modeset-and-igt/README.md) | QEMU 可完成 | IGT 测试与日志分析 |
-| 11 | [Session 11](../sessions/session-11-gem-ttm-dma-buf/README.md) | GEM、TTM、dma-buf | [Lab 11](../labs/lab-11-gem-ttm-dma-buf/README.md) | 源码可完成 | 显存管理对比 |
-| 12 | [Session 12](../sessions/session-12-fence-vblank-irq/README.md) | Fence、vblank、IRQ | [Lab 12](../labs/lab-12-fence-vblank-irq/README.md) | QEMU 可完成 | 同步机制笔记 |
-| 13 | [Session 13](../sessions/session-13-read-vkms/README.md) | `vkms` | [Lab 13](../labs/lab-13-read-vkms/README.md) | QEMU 可完成 | 驱动结构总结 |
-| 14 | [Session 14](../sessions/session-14-read-simpledrm/README.md) | `simpledrm` | [Lab 14](../labs/lab-14-read-simpledrm/README.md) | QEMU 可完成 | init 流程图 |
-| 15 | [Session 15](../sessions/session-15-read-msm-or-panfrost/README.md) | `msm` 或 `panfrost` | [Lab 15](../labs/lab-15-read-msm-or-panfrost/README.md) | 源码可完成 | 提交流程笔记 |
-| 16 | [Session 16](../sessions/session-16-read-i915-or-xe/README.md) | `i915` 或 `xe` | [Lab 16](../labs/lab-16-read-i915-or-xe/README.md) | 源码可完成 | 模块结构总结 |
-| 17 | [Session 17](../sessions/session-17-read-amdgpu-memory/README.md) | `amdgpu` 显存管理 | [Lab 17](../labs/lab-17-read-amdgpu-memory/README.md) | 源码可完成 | VM/BO 笔记 |
-| 18 | [Session 18](../sessions/session-18-read-amdgpu-submission/README.md) | `amdgpu` 命令提交和调度 | [Lab 18](../labs/lab-18-read-amdgpu-submission/README.md) | 源码可完成 | scheduler/fence 笔记 |
-| 19 | [Session 19](../sessions/session-19-page-fault-hang-reset/README.md) | page fault、hang、reset | [Lab 19](../labs/lab-19-page-fault-hang-reset/README.md) | 真机优先 | GPU Hang dump 分析 |
-| 20 | [Session 20](../sessions/session-20-page-flip-and-display/README.md) | page flip、显示输出 | [Lab 20](../labs/lab-20-page-flip-and-display/README.md) | 真机优先 | KMS/vblank 笔记 |
-| 21 | [Session 21](../sessions/session-21-trace-debugfs-perf/README.md) | trace、debugfs、perf | [Lab 21](../labs/lab-21-trace-debugfs-perf/README.md) | 真机优先 | 一次调试记录 |
-| 22 | [Session 22](../sessions/session-22-end-to-end-ioctl-path/README.md) | 完整读一次 `ioctl` 路径 | [Lab 22](../labs/lab-22-end-to-end-ioctl-path/README.md) | QEMU 可完成 | 路径解剖笔记 |
-| 23 | [Session 23](../sessions/session-23-specialization/README.md) | 选方向深挖 | [Lab 23](../labs/lab-23-specialization/README.md) | 按方向决定 | 专题计划 |
-| 24 | [Session 24](../sessions/session-24-retrospective-and-next-plan/README.md) | 总结和复盘 | [Lab 24](../labs/lab-24-retrospective-and-next-plan/README.md) | 任意环境 | 阶段总结 |
+| 1 | [Session 01](../sessions/session-01-environment-and-stack/session-01-environment-and-stack.md) | 环境准备、图形栈总览 | [Lab 01](../labs/lab-01-environment-and-stack/lab-01-environment-and-stack.md) | QEMU 可完成 | 环境记录和总览图 |
+| 2 | [Session 02](../sessions/session-02-c-and-kernel-structures/session-02-c-and-kernel-structures.md) | C 和内核常见数据结构 | [Lab 02](../labs/lab-02-c-and-kernel-structures/lab-02-c-and-kernel-structures.md) | 源码可完成 | 结构体、链表、锁笔记 |
+| 3 | [Session 03](../sessions/session-03-virtual-memory-dma-iommu/session-03-virtual-memory-dma-iommu.md) | 虚拟内存、DMA、IOMMU | [Lab 03](../labs/lab-03-virtual-memory-dma-iommu/lab-03-virtual-memory-dma-iommu.md) | 源码可完成 | 内存路径图 |
+| 4 | [Session 04](../sessions/session-04-pcie-interrupt-device-model/session-04-pcie-interrupt-device-model.md) | PCIe、中断、设备模型 | [Lab 04](../labs/lab-04-pcie-interrupt-device-model/lab-04-pcie-interrupt-device-model.md) | 源码可完成 | 设备初始化流程图 |
+| 5 | [Session 05](../sessions/session-05-ioctl-mmap-driver-basics/session-05-ioctl-mmap-driver-basics.md) | `ioctl`、`mmap`、驱动基础 | [Lab 05](../labs/lab-05-ioctl-mmap-driver-basics/lab-05-ioctl-mmap-driver-basics.md) | QEMU 可完成 | 调用链笔记 |
+| 6 | [Session 06](../sessions/session-06-graphics-pipeline/session-06-graphics-pipeline.md) | GPU 图形流水线 | [Lab 06](../labs/lab-06-graphics-pipeline/lab-06-graphics-pipeline.md) | 源码可完成 | 流水线图 |
+| 7 | [Session 07](../sessions/session-07-compute-model-and-queues/session-07-compute-model-and-queues.md) | GPU 计算模型、User-Mode Queues | [Lab 07](../labs/lab-07-compute-model-and-queues/lab-07-compute-model-and-queues.md) | 源码可完成 | command buffer 笔记 |
+| 8 | [Session 08](../sessions/session-08-mesa-libdrm-drm/session-08-mesa-libdrm-drm.md) | Mesa、libdrm、DRM 关系 | [Lab 08](../labs/lab-08-mesa-libdrm-drm/lab-08-mesa-libdrm-drm.md) | 源码可完成 | 用户态图形栈总结 |
+| 9 | [Session 09](../sessions/session-09-drm-kms-object-model/session-09-drm-kms-object-model.md) | DRM/KMS 对象模型 | [Lab 09](../labs/lab-09-drm-kms-object-model/lab-09-drm-kms-object-model.md) | QEMU 可完成 | 对象关系图 |
+| 10 | [Session 10](../sessions/session-10-atomic-modeset-and-igt/session-10-atomic-modeset-and-igt.md) | Atomic modeset | [Lab 10](../labs/lab-10-atomic-modeset-and-igt/lab-10-atomic-modeset-and-igt.md) | QEMU 可完成 | IGT 测试与日志分析 |
+| 11 | [Session 11](../sessions/session-11-gem-ttm-dma-buf/session-11-gem-ttm-dma-buf.md) | GEM、TTM、dma-buf | [Lab 11](../labs/lab-11-gem-ttm-dma-buf/lab-11-gem-ttm-dma-buf.md) | 源码可完成 | 显存管理对比 |
+| 12 | [Session 12](../sessions/session-12-fence-vblank-irq/session-12-fence-vblank-irq.md) | Fence、vblank、IRQ | [Lab 12](../labs/lab-12-fence-vblank-irq/lab-12-fence-vblank-irq.md) | QEMU 可完成 | 同步机制笔记 |
+| 13 | [Session 13](../sessions/session-13-read-vkms/session-13-read-vkms.md) | `vkms` | [Lab 13](../labs/lab-13-read-vkms/lab-13-read-vkms.md) | QEMU 可完成 | 驱动结构总结 |
+| 14 | [Session 14](../sessions/session-14-read-simpledrm/session-14-read-simpledrm.md) | `simpledrm` | [Lab 14](../labs/lab-14-read-simpledrm/lab-14-read-simpledrm.md) | QEMU 可完成 | init 流程图 |
+| 15 | [Session 15](../sessions/session-15-read-msm-or-panfrost/session-15-read-msm-or-panfrost.md) | `msm` 或 `panfrost` | [Lab 15](../labs/lab-15-read-msm-or-panfrost/lab-15-read-msm-or-panfrost.md) | 源码可完成 | 提交流程笔记 |
+| 16 | [Session 16](../sessions/session-16-read-i915-or-xe/session-16-read-i915-or-xe.md) | `i915` 或 `xe` | [Lab 16](../labs/lab-16-read-i915-or-xe/lab-16-read-i915-or-xe.md) | 源码可完成 | 模块结构总结 |
+| 17 | [Session 17](../sessions/session-17-read-amdgpu-memory/session-17-read-amdgpu-memory.md) | `amdgpu` 显存管理 | [Lab 17](../labs/lab-17-read-amdgpu-memory/lab-17-read-amdgpu-memory.md) | 源码可完成 | VM/BO 笔记 |
+| 18 | [Session 18](../sessions/session-18-read-amdgpu-submission/session-18-read-amdgpu-submission.md) | `amdgpu` 命令提交和调度 | [Lab 18](../labs/lab-18-read-amdgpu-submission/lab-18-read-amdgpu-submission.md) | 源码可完成 | scheduler/fence 笔记 |
+| 19 | [Session 19](../sessions/session-19-page-fault-hang-reset/session-19-page-fault-hang-reset.md) | page fault、hang、reset | [Lab 19](../labs/lab-19-page-fault-hang-reset/lab-19-page-fault-hang-reset.md) | 真机优先 | GPU Hang dump 分析 |
+| 20 | [Session 20](../sessions/session-20-page-flip-and-display/session-20-page-flip-and-display.md) | page flip、显示输出 | [Lab 20](../labs/lab-20-page-flip-and-display/lab-20-page-flip-and-display.md) | 真机优先 | KMS/vblank 笔记 |
+| 21 | [Session 21](../sessions/session-21-trace-debugfs-perf/session-21-trace-debugfs-perf.md) | trace、debugfs、perf | [Lab 21](../labs/lab-21-trace-debugfs-perf/lab-21-trace-debugfs-perf.md) | 真机优先 | 一次调试记录 |
+| 22 | [Session 22](../sessions/session-22-end-to-end-ioctl-path/session-22-end-to-end-ioctl-path.md) | 完整读一次 `ioctl` 路径 | [Lab 22](../labs/lab-22-end-to-end-ioctl-path/lab-22-end-to-end-ioctl-path.md) | QEMU 可完成 | 路径解剖笔记 |
+| 23 | [Session 23](../sessions/session-23-specialization/session-23-specialization.md) | 选方向深挖 | [Lab 23](../labs/lab-23-specialization/lab-23-specialization.md) | 按方向决定 | 专题计划 |
+| 24 | [Session 24](../sessions/session-24-retrospective-and-next-plan/session-24-retrospective-and-next-plan.md) | 总结和复盘 | [Lab 24](../labs/lab-24-retrospective-and-next-plan/lab-24-retrospective-and-next-plan.md) | 任意环境 | 阶段总结 |
 
 ## 阶段划分
 

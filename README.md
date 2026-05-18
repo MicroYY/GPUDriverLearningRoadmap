@@ -115,10 +115,10 @@ git -C sources/linux sparse-checkout set Documentation/gpu drivers/base drivers/
 ## Sessions
 
 - [Session 导航](sessions/README.md)
-- [Session 01：环境准备与图形栈总览](sessions/session-01-environment-and-stack/README.md)
-- [Session 10：Atomic modeset 与 IGT 基础](sessions/session-10-atomic-modeset-and-igt/README.md)
-- [Session 13：阅读 `vkms`](sessions/session-13-read-vkms/README.md)
-- [Session 19：Page fault、Hang 与 Reset](sessions/session-19-page-fault-hang-reset/README.md)
+- [Session 01：环境准备与图形栈总览](sessions/session-01-environment-and-stack/session-01-environment-and-stack.md)
+- [Session 10：Atomic modeset 与 IGT 基础](sessions/session-10-atomic-modeset-and-igt/session-10-atomic-modeset-and-igt.md)
+- [Session 13：阅读 `vkms`](sessions/session-13-read-vkms/session-13-read-vkms.md)
+- [Session 19：Page fault、Hang 与 Reset](sessions/session-19-page-fault-hang-reset/session-19-page-fault-hang-reset.md)
 
 ## 实验导航
 
