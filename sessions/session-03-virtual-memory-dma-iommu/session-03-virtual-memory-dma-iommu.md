@@ -12,7 +12,9 @@
 
 ## 学习内容
 
-### 1. 为什么 GPU 驱动一定绕不开地址空间
+## 1. 地址空间的全景地图
+
+### 1.1 为什么 GPU 驱动绕不开多重地址视角
 
 在普通用户态程序里，你通常只关心一个地址：指针。
 
@@ -36,9 +38,9 @@ memset(p, 0, 4096);
 - 这块内存现在是否被 pin 住，能不能迁移？
 - CPU cache 和设备访问之间是否需要同步？
 
-这就是后面 GEM、TTM、dma-buf、GPU VM、page fault 都会反复出现的根。
+这就后面 GEM、TTM、dma-buf、GPU VM、page fault 都会反复出现的根。
 
-### 2. 先把几种地址分清楚
+### 1.2 核心地址类型辨析
 
 最容易混淆的是下面这几种地址：
 
@@ -71,7 +73,9 @@ flowchart LR
 
 同一块物理页可以被多套地址系统引用。读驱动时，如果你只看到一个 `addr` 字段，不要急着下结论，要看它是 CPU 地址、DMA 地址还是 GPU VA。
 
-### 3. DMA mapping API 在解决什么
+## 2. DMA 映射与 SGL (Scatter-Gather List)
+
+### 2.1 DMA mapping API 在解决什么
 
 设备不能直接拿一个 CPU 指针就开始访问内存。原因很简单：
 
@@ -121,7 +125,15 @@ dma_unmap_sgtable(dev, sgt, DMA_BIDIRECTIONAL, 0);
 
 真实 DRM 驱动里的 BO 往往不是一整块连续物理内存，而是一组 page 加上 `sg_table`。这也是为什么你后面会反复看到 `pages`、`sgt`、`pin`、`map`、`unmap`。
 
-### 4. IOMMU：设备侧的地址翻译和隔离
+### 2.2 为什么驱动里到处都是 sg_table (SGL)？
+
+在 GPU 领域，无论是 GEM 显存管理、Buffer 驱逐（Eviction），还是 dma-buf 跨设备共享，底层**全部都极为依赖 `sg_table`（或称 scatterlist）**。
+因为在现代操作系统中，物理内存经过长时间运行后会产生大量碎片，很难为 GPU 直接分配数十兆甚至上 G 的**连续**物理内存。`sg_table` 的核心作用就是把一片片**离散的物理页**串联成一个列表。
+随后，硬件依靠 IOMMU 或 GPU 内部的 MMU 机制，将这些离散的物理页映射到设备侧的**连续 IOVA 或 GPU VA 空间**供硬件使用。理解了 SGL，就理解了内核处理大块显存数据的通用法则。
+
+## 3. IOMMU 与硬件翻译层
+
+### 3.1 IOMMU：设备侧的地址翻译和隔离
 
 没有 IOMMU 时，设备 DMA 往往更接近直接访问物理地址。这样做性能直接，但安全和隔离都比较弱：如果设备被错误配置，可能写到不该写的物理内存。
 
@@ -145,7 +157,9 @@ dma_unmap_sgtable(dev, sgt, DMA_BIDIRECTIONAL, 0);
 
 把这两层分开，后面读 page fault 和显存迁移才不容易混。
 
-### 5. Buffer object 为什么天然会牵涉映射
+## 4. 显存对象与跨域共享
+
+### 4.1 Buffer Object (BO) 的多重映射属性
 
 一个 buffer object 在驱动里通常不是“一个指针”，而是一组状态：
 
@@ -178,7 +192,14 @@ struct my_bo {
 
 看到 BO 时，应该立刻想到：这个对象可能同时有 CPU 映射、DMA 映射、GPU VM 映射和用户态 handle。
 
-### 6. Cache coherency 不要先钻太深，但要建立警觉
+### 4.2 跨硬件共享的桥梁：dma-buf
+
+如果一个 BO 需要跳出单一 GPU 的范畴，参与更复杂的协同工作（例如：GPU 渲染完画面，直接交给另一个独立的 Video 硬件解码器处理，或转给 Display 控制器进行扫出），这时候就必然需要 **`dma-buf`**。
+`dma-buf` 是一种 Linux 内核框架，它能把带着内部 `sg_table` 物理页列表以及各种 DMA/同步状态的 Buffer 对象，包装成一个通用的文件描述符（FD），进而穿梭于不同的驱动、不同的设备甚至用户态之间。这为后续的 DRM Prime 及数据零拷贝（Zero-Copy）打下了基础。
+
+## 5. 缓存一致性与高级访存属性
+
+### 5.1 缓存一致性 (Cache Coherency) 边界
 
 CPU 和设备都能访问同一块内存时，cache 一致性会变得重要。
 
@@ -200,7 +221,17 @@ dma_sync_single_for_cpu(dev, dma, len, DMA_FROM_DEVICE);
 
 后面读移动 GPU、display controller 或 dma-buf 共享时，如果看到 flush、invalidate、sync，就把它放回“谁刚刚写，谁接下来读”的问题里理解。
 
-### 7. 本节实践：追一条最小映射路径
+### 5.2 CPU 映射的性能密码：WC vs UC vs Cached
+
+在显存管理中，当我们需要用 CPU 指针去读写 GPU 的 Buffer 时，通常会遇到三种不同的内存属性映射机制：
+- **Cached（缓存的）**：CPU 读写最快，但数据会长期驻留在 CPU L1/L2 Cache 中，必须执行显式的 Cache Flush 操作才能将数据推入物理内存供 GPU 访问。
+- **UC (Uncached, 不缓存)**：每次 CPU 读写都直接绕过 Cache 直达物理总线，性能极其低下，但可以确保每次读写的强时效与一致性。
+- **WC (Write-Combine, 写合并)**：这是 GPU 驱动**最常用的优化属性**！它不经过 Cache 缓存，但会利用 CPU 的 Write Buffer 拦截并合并连续的写操作，凑够一个完整的 Cacheline（例如 64 字节）后一次性通过 PCIe 总线刷入物理内存/VRAM。
+在阅读与编写 GPU 驱动时需牢记：**CPU 写显存绝大多数情况使用 Write-Combine 以获得最大的总线带宽，而 CPU 读显存由于缺少 Cached 而极其极其缓慢，应当在架构层面尽全力避免！**
+
+## 6. 源码阅读与实践指南
+
+### 6.1 实践：追一条最小映射路径
 
 可以从一个很小的路径开始，不要求一次读完整个显存管理系统。
 
@@ -228,17 +259,6 @@ rg -n "dma_map_sgtable|dma_map_sg|dma_unmap_sgtable" drivers/gpu drivers/dma-buf
 - `drivers/iommu/`
 - `include/drm/drm_gem.h`
 - `include/drm/drm_gem_dma_helper.h`
-
-## 建议输出
-
-- 内存路径图
-- DMA / IOMMU 关系笔记
-
-## 完成标准
-
-- 能画出 CPU、IOMMU、设备、内存之间的地址转换路径。
-- 能解释 DMA mapping 和普通 CPU 指针访问为什么不是同一件事。
-- 能说清 GPU 驱动为什么不能只关心“malloc 出来的一块内存”。
 
 ## 关联 Lab
 
