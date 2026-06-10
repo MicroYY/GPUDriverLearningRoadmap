@@ -35,7 +35,62 @@
 
 建议你至少手写一段自己的解释，而不是照抄宏定义。
 
-### 2. 写一个最小侵入式链表示例
+### 2. 完成配套代码实验
+
+本 lab 提供了一个最小 C 代码框架，用用户态程序模拟内核里常见的几种结构组织方式：
+
+- 侵入式双向链表
+- `container_of`
+- 对象状态流转
+
+`ops` table 在本节只要求先能识别，不放进代码实验。完整的函数表分发更适合放到后面的 `file_operations`、DRM/KMS `funcs` / `helper_funcs`、scheduler backend ops 里展开。
+
+代码目录：
+
+- [code](code/README.md)
+
+需要补充实现的文件：
+
+- [lab02_list.h](code/include/lab02_list.h)
+- [lab02_list.c](code/src/lab02_list.c)
+- [job_queue.c](code/src/job_queue.c)
+
+测试入口：
+
+- [test_lab02.c](code/tests/test_lab02.c)
+
+在 Windows PowerShell 里运行：
+
+```powershell
+cd labs\lab-02-c-and-kernel-structures\code
+powershell -ExecutionPolicy Bypass -File .\run-tests.ps1
+```
+
+在 Linux / WSL 里运行：
+
+```bash
+cd labs/lab-02-c-and-kernel-structures/code
+make test
+```
+
+Windows 版本会自动寻找 `cl.exe`、`clang` 或 `gcc`。如果本机没有 C 编译器，需要先安装 Visual Studio Build Tools、LLVM/Clang 或 MinGW-w64。
+
+初始代码里保留了 `TODO(student)`，所以第一次运行测试失败是正常的。建议按下面顺序补：
+
+1. 实现 `container_of`
+2. 实现 `list_init` / `list_empty`
+3. 实现 `list_add` / `list_add_tail` / `list_del`
+4. 实现 `job_queue_init`
+5. 实现 `job_queue_submit` / `job_queue_complete_next`
+6. 实现 pending/done 计数
+
+通过测试后，你应该能解释：
+
+- 链表为什么只串 `struct list_head`
+- `container_of` 怎么从 `link` 找回完整 `struct job`
+- `struct job` 怎么在 pending/done 两条链表之间完成状态流转
+
+### 3. 写一个最小侵入式链表示例
 
 写一个最小 C 示例，模拟“对象内部嵌入链表节点”的写法。
 
@@ -58,9 +113,9 @@ struct my_job {
 
 如果你暂时不想直接依赖内核头文件，也可以自己写一个极简版 `list_head` 和 `container_of` 教学示例。重点不是追求和内核一模一样，而是亲手验证“节点在对象里、对象通过节点被统一管理”。
 
-### 3. 写一个最小 `ops` table 示例
+### 4. 识别一个最小 `ops` table
 
-再写一个最小示例，说明“函数指针表 = 接口 + 多态”的组织方式。
+这一节先不要求你写 `ops` table 代码，只要求能识别“函数指针表 = 接口 + 多态”的组织方式。
 
 可以参考下面这个思路：
 
@@ -78,17 +133,17 @@ struct my_queue {
 };
 ```
 
-示例里至少包含：
-
-- 两套不同的 `ops` 实现。
-- 两个对象分别绑定不同实现。
-- 调用同一个入口，但表现不同。
-
-你要通过这个实验确认一件事：
+你要通过这个小片段先确认一件事：
 
 - 在 C 里，即使没有类继承，也能通过“对象 + 函数表”的方式表达公共接口和不同实现。
 
-### 4. 给一个对象补上生命周期和并发字段
+完整代码实验放到后续更贴近真实场景的位置：
+
+- Session 05 / Lab 05：`file_operations` 和 `ioctl` 入口分发。
+- Session 09 到 10：DRM/KMS 对象的 `funcs` / `helper_funcs`。
+- Session 18 到 19：scheduler backend ops 和 timeout 回调。
+
+### 5. 给一个对象补上生命周期和并发字段
 
 在你自己的最小示例里，再加几类“内核对象常见字段”，不要求真的实现完整并发，只要求你在结构体层面把角色区分清楚。
 
@@ -108,7 +163,7 @@ struct my_queue {
 
 这一步的重点是训练你“拆结构体”的习惯。
 
-### 5. 跨越指针与特殊修饰符的陷阱
+### 6. 跨越指针与特殊修饰符的陷阱
 
 在阅读内核代码前，熟悉一些高频但往往在普通 C 教程里找不到的规范。找出下面几个机制并在笔记里回答：
 
@@ -117,7 +172,7 @@ struct my_queue {
 - 为什么读写一个用 `__iomem` 修饰的硬件映射指针不能直接解引用，而一定要用 `readl/writel` 这样的宏？
 - 遇到带有 `__user` 的显存数据指针，内核代码用什么接口去安全地读取它？
 
-### 6. 把练习映射到真实内核/驱动对象
+### 7. 把练习映射到真实内核/驱动对象
 
 从 Linux kernel 或 DRM 相关代码里，找 2 到 3 个真实对象做小型解剖。
 
@@ -139,7 +194,7 @@ struct my_queue {
 
 这一部分不要求你一次吃透所有细节，但要求你开始习惯按“对象视角”阅读源码。
 
-### 7. 输出一张“对象组织模式速查图”
+### 8. 输出一张“对象组织模式速查图”
 
 把本节学到的内容压缩成你后面会反复翻看的速查图或速记表。
 
@@ -180,8 +235,9 @@ struct my_queue {
 ## 检查项
 
 - [ ] 我已经读过 `list_head` 和 `container_of` 的实现或等价教学版本
+- [ ] 我已经完成 `code/` 目录里的 TODO，并在 Windows 或 Linux/WSL 上通过测试
 - [ ] 我已经写出一个最小侵入式链表示例
-- [ ] 我已经写出一个最小 `ops` table 示例
+- [ ] 我已经能识别一个最小 `ops` table 的结构和作用
 - [ ] 我已经能解释为什么“成员地址可以反推出完整对象”
 - [ ] 我已经能解释为什么一个对象能同时挂进多个集合
 - [ ] 我理解 `IS_ERR` 的作用，不再用简单的 `!ptr` 漏掉错误指针
@@ -192,7 +248,7 @@ struct my_queue {
 ## 交付物
 
 - 一篇“结构体、嵌入、`container_of`”笔记
-- 一个最小链表/函数表示例
+- 一个通过测试的最小链表和对象状态流转示例
 - 一份“内核对象组织模式速查图”或速查表
 
 ## 完成标准

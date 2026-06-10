@@ -44,7 +44,52 @@
 - 为什么写 doorbell 可以通知 GPU。
 - 它和“把命令写进 ring”是什么关系。
 
-### 4. 找一条真实 submit 入口
+### 4. 完成 queue `ops table` 代码实验
+
+本 lab 提供一个最小 C 代码框架，用固定容量 pending 队列模拟“同一个 queue 对象绑定不同 ops 后表现出不同提交策略”。
+
+代码目录：
+
+- [code](code/README.md)
+
+需要补充实现的文件：
+
+- [queue_ops.h](code/include/queue_ops.h)
+- [queue_ops.c](code/src/queue_ops.c)
+
+测试入口：
+
+- [test_queue_ops.c](code/tests/test_queue_ops.c)
+
+在 Windows PowerShell 里运行：
+
+```powershell
+cd labs\lab-07-compute-model-and-queues\code
+powershell -ExecutionPolicy Bypass -File .\run-tests.ps1
+```
+
+在 Linux / WSL 里运行：
+
+```bash
+cd labs/lab-07-compute-model-and-queues/code
+make test
+```
+
+初始代码里保留了 `TODO(student)`，所以第一次运行测试失败是正常的。建议按下面顺序补：
+
+1. 实现 `gpu_queue_init`
+2. 实现 `pending_count`
+3. 实现 FIFO 的 `submit_tail`
+4. 实现 LIFO 的 `submit_head`
+5. 实现 `complete_next`
+
+通过测试后，你应该能解释：
+
+- `struct gpu_queue_ops` 为什么像一个小型接口表。
+- 同一个 `struct gpu_queue` 为什么能通过不同 `ops` 实现 FIFO / LIFO。
+- scheduler backend ops、KMS helper funcs 这类真实驱动回调表和这个模型有什么相似点。
+
+### 5. 找一条真实 submit 入口
 
 任选一个驱动，定位 submit、scheduler、ring 或 doorbell 相关代码：
 
@@ -58,6 +103,7 @@ rg -n "submit|drm_sched|ring|doorbell|wptr|run_job" drivers/gpu/drm/amd drivers/
 
 - 计算模型笔记
 - queue 关系图
+- 通过测试的 queue `ops table` 示例
 - submit 入口定位记录
 
 ## 检查项
@@ -65,6 +111,7 @@ rg -n "submit|drm_sched|ring|doorbell|wptr|run_job" drivers/gpu/drm/amd drivers/
 - [ ] 我能解释 wave/warp/workgroup 的基本含义。
 - [ ] 我能区分 queue、ring、command buffer。
 - [ ] 我能解释 doorbell 在提交路径中的位置。
+- [ ] 我完成了 `code/` 目录里的 queue `ops table` 实验。
 - [ ] 我能指出至少一个真实驱动里的 submit 或 ring 相关入口。
 
 ## 完成标准
