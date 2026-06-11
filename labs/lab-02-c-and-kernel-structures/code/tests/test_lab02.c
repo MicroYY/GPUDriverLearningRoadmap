@@ -7,8 +7,8 @@
 #define ASSERT_TRUE(expr)                                                       \
     do {                                                                        \
         if (!(expr)) {                                                          \
-            fprintf(stderr, "FAIL: %s:%d: expected true: %s\n", __FILE__,       \
-                    __LINE__, #expr);                                           \
+            printf("FAIL: %s:%d: expected true: %s\n", __FILE__, __LINE__,      \
+                   #expr);                                                      \
             return 1;                                                           \
         }                                                                       \
     } while (0)
@@ -18,8 +18,8 @@
         int expected_value = (expected);                                        \
         int actual_value = (actual);                                            \
         if (expected_value != actual_value) {                                   \
-            fprintf(stderr, "FAIL: %s:%d: expected %d, got %d\n", __FILE__,     \
-                    __LINE__, expected_value, actual_value);                    \
+            printf("FAIL: %s:%d: expected %d, got %d\n", __FILE__, __LINE__,    \
+                   expected_value, actual_value);                               \
             return 1;                                                           \
         }                                                                       \
     } while (0)
@@ -29,8 +29,8 @@
         size_t expected_value = (expected);                                     \
         size_t actual_value = (actual);                                         \
         if (expected_value != actual_value) {                                   \
-            fprintf(stderr, "FAIL: %s:%d: expected %zu, got %zu\n", __FILE__,   \
-                    __LINE__, expected_value, actual_value);                    \
+            printf("FAIL: %s:%d: expected %zu, got %zu\n", __FILE__, __LINE__,  \
+                   expected_value, actual_value);                               \
             return 1;                                                           \
         }                                                                       \
     } while (0)
@@ -40,8 +40,8 @@
         const void *expected_value = (expected);                                \
         const void *actual_value = (actual);                                    \
         if (expected_value != actual_value) {                                   \
-            fprintf(stderr, "FAIL: %s:%d: expected %p, got %p\n", __FILE__,     \
-                    __LINE__, expected_value, actual_value);                    \
+            printf("FAIL: %s:%d: expected %p, got %p\n", __FILE__, __LINE__,    \
+                   expected_value, actual_value);                               \
             return 1;                                                           \
         }                                                                       \
     } while (0)
@@ -50,9 +50,13 @@
     do {                                                                        \
         const char *expected_value = (expected);                                \
         const char *actual_value = (actual);                                    \
-        if (strcmp(expected_value, actual_value) != 0) {                        \
-            fprintf(stderr, "FAIL: %s:%d: expected \"%s\", got \"%s\"\n",       \
-                    __FILE__, __LINE__, expected_value, actual_value);          \
+        if ((expected_value == NULL) != (actual_value == NULL) ||               \
+            (expected_value != NULL &&                                          \
+             strcmp(expected_value, actual_value) != 0)) {                      \
+            printf("FAIL: %s:%d: expected \"%s\", got \"%s\"\n", __FILE__,      \
+                   __LINE__,                                                    \
+                   expected_value == NULL ? "(null)" : expected_value,          \
+                   actual_value == NULL ? "(null)" : actual_value);             \
             return 1;                                                           \
         }                                                                       \
     } while (0)
@@ -72,6 +76,18 @@ static int test_container_of(void)
     return 0;
 }
 
+static int test_list_init_and_empty(void)
+{
+    struct list_head head;
+
+    list_init(&head);
+
+    ASSERT_PTR_EQ(&head, head.next);
+    ASSERT_PTR_EQ(&head, head.prev);
+    ASSERT_TRUE(list_empty(&head));
+    return 0;
+}
+
 static int test_list_add_head_order(void)
 {
     struct list_head head;
@@ -85,12 +101,16 @@ static int test_list_add_head_order(void)
     list_add(&first.link, &head);
     list_add(&second.link, &head);
 
-    ASSERT_PTR_EQ(&second, list_first_entry(&head, struct job, link));
-    ASSERT_PTR_EQ(&first, list_entry(second.link.next, struct job, link));
+    ASSERT_PTR_EQ(&second.link, head.next);
+    ASSERT_PTR_EQ(&head, second.link.prev);
+    ASSERT_PTR_EQ(&first.link, second.link.next);
+    ASSERT_PTR_EQ(&second.link, first.link.prev);
+    ASSERT_PTR_EQ(&head, first.link.next);
+    ASSERT_PTR_EQ(&first.link, head.prev);
     return 0;
 }
 
-static int test_intrusive_list_basics(void)
+static int test_list_add_tail_and_delete(void)
 {
     struct list_head head;
     struct job first;
@@ -104,20 +124,72 @@ static int test_intrusive_list_basics(void)
 
     list_add_tail(&first.link, &head);
     ASSERT_TRUE(!list_empty(&head));
-    ASSERT_PTR_EQ(&first, list_first_entry(&head, struct job, link));
+    ASSERT_PTR_EQ(&first.link, head.next);
+    ASSERT_PTR_EQ(&first.link, head.prev);
+    ASSERT_PTR_EQ(&head, first.link.next);
+    ASSERT_PTR_EQ(&head, first.link.prev);
 
     list_add_tail(&second.link, &head);
-    ASSERT_PTR_EQ(&first, list_first_entry(&head, struct job, link));
+    ASSERT_PTR_EQ(&first.link, head.next);
+    ASSERT_PTR_EQ(&second.link, head.prev);
+    ASSERT_PTR_EQ(&second.link, first.link.next);
+    ASSERT_PTR_EQ(&first.link, second.link.prev);
 
     list_del(&first.link);
-    ASSERT_PTR_EQ(&second, list_first_entry(&head, struct job, link));
+    ASSERT_PTR_EQ(&second.link, head.next);
+    ASSERT_PTR_EQ(&second.link, head.prev);
+    ASSERT_PTR_EQ(&first.link, first.link.next);
+    ASSERT_PTR_EQ(&first.link, first.link.prev);
 
     list_del(&second.link);
     ASSERT_TRUE(list_empty(&head));
+    ASSERT_PTR_EQ(&second.link, second.link.next);
+    ASSERT_PTR_EQ(&second.link, second.link.prev);
     return 0;
 }
 
-static int test_job_queue_state_flow(void)
+static int test_job_queue_init(void)
+{
+    struct job_queue queue;
+
+    memset(&queue, 0, sizeof(queue));
+
+    job_queue_init(&queue, "pending-jobs");
+
+    ASSERT_STR_EQ("pending-jobs", queue.name);
+    ASSERT_EQ_INT(1, (int)queue.refcount);
+    ASSERT_EQ_INT(0, (int)queue.flags);
+    ASSERT_PTR_EQ(&queue.pending, queue.pending.next);
+    ASSERT_PTR_EQ(&queue.pending, queue.pending.prev);
+    ASSERT_PTR_EQ(&queue.done, queue.done.next);
+    ASSERT_PTR_EQ(&queue.done, queue.done.prev);
+    ASSERT_EQ_SIZE(0, job_queue_pending_count(&queue));
+    ASSERT_EQ_SIZE(0, job_queue_done_count(&queue));
+    return 0;
+}
+
+static int test_job_queue_submit(void)
+{
+    struct job_queue queue;
+    struct job first;
+    struct job second;
+
+    job_queue_init(&queue, "pending-jobs");
+    job_init(&first, 1, 10);
+    job_init(&second, 2, 20);
+
+    ASSERT_EQ_INT(0, job_queue_submit(&queue, &first));
+    ASSERT_EQ_INT(0, job_queue_submit(&queue, &second));
+    ASSERT_EQ_INT(-1, job_queue_submit(&queue, &first));
+    ASSERT_EQ_INT(JOB_PENDING, first.state);
+    ASSERT_EQ_INT(JOB_PENDING, second.state);
+    ASSERT_EQ_SIZE(2, job_queue_pending_count(&queue));
+    ASSERT_PTR_EQ(&first.link, queue.pending.next);
+    ASSERT_PTR_EQ(&second.link, queue.pending.prev);
+    return 0;
+}
+
+static int test_job_queue_complete_next(void)
 {
     struct job_queue queue;
     struct job first;
@@ -128,18 +200,8 @@ static int test_job_queue_state_flow(void)
     job_init(&first, 1, 10);
     job_init(&second, 2, 20);
 
-    ASSERT_STR_EQ("pending-jobs", queue.name);
-    ASSERT_EQ_INT(1, (int)queue.refcount);
-    ASSERT_EQ_INT(0, (int)queue.flags);
-    ASSERT_EQ_SIZE(0, job_queue_pending_count(&queue));
-    ASSERT_EQ_SIZE(0, job_queue_done_count(&queue));
-
     ASSERT_EQ_INT(0, job_queue_submit(&queue, &first));
     ASSERT_EQ_INT(0, job_queue_submit(&queue, &second));
-    ASSERT_EQ_INT(-1, job_queue_submit(&queue, &first));
-    ASSERT_EQ_INT(JOB_PENDING, first.state);
-    ASSERT_EQ_INT(JOB_PENDING, second.state);
-    ASSERT_EQ_SIZE(2, job_queue_pending_count(&queue));
 
     ASSERT_EQ_INT(0, job_queue_complete_next(&queue, &done));
     ASSERT_PTR_EQ(&first, done);
@@ -173,29 +235,106 @@ static int test_job_queue_complete_with_null_output(void)
     return 0;
 }
 
-int main(void)
+typedef int (*test_fn)(void);
+
+static int run_test(const char *name, test_fn fn)
 {
     int rc;
 
-    rc = test_container_of();
-    if (rc != 0)
-        return rc;
+    printf("RUN : %s\n", name);
+    fflush(stdout);
 
-    rc = test_list_add_head_order();
-    if (rc != 0)
-        return rc;
+    rc = fn();
+    if (rc != 0) {
+        printf("FAIL: %s\n", name);
+        return 1;
+    }
 
-    rc = test_intrusive_list_basics();
-    if (rc != 0)
-        return rc;
+    printf("PASS: %s\n", name);
+    return 0;
+}
 
-    rc = test_job_queue_state_flow();
-    if (rc != 0)
-        return rc;
+static int skip_test(const char *name, const char *reason)
+{
+    printf("SKIP: %s (%s)\n", name, reason);
+    return 1;
+}
 
-    rc = test_job_queue_complete_with_null_output();
-    if (rc != 0)
-        return rc;
+int main(void)
+{
+    int failures = 0;
+    int skipped = 0;
+    int container_failed;
+    int list_init_failed;
+    int list_add_failed = 1;
+    int list_tail_failed = 1;
+    int queue_init_failed = 1;
+    int queue_submit_failed = 1;
+    int queue_complete_failed = 1;
+
+    container_failed = run_test("container_of recovers the owner object",
+                                test_container_of);
+    failures += container_failed;
+
+    list_init_failed = run_test("list_init/list_empty make a circular head",
+                                test_list_init_and_empty);
+    failures += list_init_failed;
+
+    if (list_init_failed == 0) {
+        list_add_failed = run_test("list_add inserts at the head",
+                                   test_list_add_head_order);
+        failures += list_add_failed;
+        list_tail_failed = run_test("list_add_tail/list_del preserve links",
+                                    test_list_add_tail_and_delete);
+        failures += list_tail_failed;
+    } else {
+        skipped += skip_test("list_add inserts at the head",
+                             "needs list_init/list_empty");
+        skipped += skip_test("list_add_tail/list_del preserve links",
+                             "needs list_init/list_empty");
+    }
+
+    if (list_init_failed == 0) {
+        queue_init_failed = run_test("job_queue_init initializes metadata",
+                                     test_job_queue_init);
+        failures += queue_init_failed;
+    } else {
+        skipped += skip_test("job_queue_init initializes metadata",
+                             "needs list_init/list_empty");
+    }
+
+    if (queue_init_failed == 0 && list_add_failed == 0 &&
+        list_tail_failed == 0) {
+        queue_submit_failed = run_test("job_queue_submit appends pending jobs",
+                                       test_job_queue_submit);
+        failures += queue_submit_failed;
+    } else {
+        skipped += skip_test("job_queue_submit appends pending jobs",
+                             "needs queue init and list add/delete");
+    }
+
+    if (container_failed == 0 && queue_submit_failed == 0) {
+        queue_complete_failed = run_test("job_queue_complete_next moves jobs",
+                                         test_job_queue_complete_next);
+        failures += queue_complete_failed;
+    } else {
+        skipped += skip_test("job_queue_complete_next moves jobs",
+                             "needs container_of and queue submit");
+    }
+
+    if (queue_complete_failed == 0) {
+        failures += run_test("job_queue_complete_next accepts NULL output",
+                             test_job_queue_complete_with_null_output);
+    } else {
+        skipped += skip_test("job_queue_complete_next accepts NULL output",
+                             "needs complete_next");
+    }
+
+    if (failures != 0) {
+        printf("FAIL: %d Lab 02 test(s) failed, %d skipped\n", failures,
+               skipped);
+        return 1;
+    }
 
     printf("PASS: all Lab 02 tests passed\n");
     return 0;

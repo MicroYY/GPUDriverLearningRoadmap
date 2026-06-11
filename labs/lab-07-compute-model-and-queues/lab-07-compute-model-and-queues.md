@@ -50,7 +50,7 @@
 
 代码目录：
 
-- [code](code/README.md)
+- [code](code/)
 
 需要补充实现的文件：
 
@@ -68,6 +68,14 @@ cd labs\lab-07-compute-model-and-queues\code
 powershell -ExecutionPolicy Bypass -File .\run-tests.ps1
 ```
 
+Windows 版本会自动寻找 `cl.exe`、`clang` 或 `gcc`。如果本机没有 C 编译器，需要先安装 Visual Studio Build Tools、LLVM/Clang 或 MinGW-w64。
+
+清理生成文件：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\run-tests.ps1 -Clean
+```
+
 在 Linux / WSL 里运行：
 
 ```bash
@@ -75,7 +83,13 @@ cd labs/lab-07-compute-model-and-queues/code
 make test
 ```
 
-初始代码里保留了 `TODO(student)`，所以第一次运行测试失败是正常的。建议按下面顺序补：
+清理生成文件：
+
+```bash
+make clean
+```
+
+测试会按小实验打印 `RUN` / `PASS` / `FAIL`，方便你看到当前通过到了哪一块。初始代码里保留了 `TODO(student)`，所以第一次运行测试失败是正常的。建议按下面顺序补：
 
 1. 实现 `gpu_queue_init`
 2. 实现 `pending_count`

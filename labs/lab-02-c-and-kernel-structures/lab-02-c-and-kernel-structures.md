@@ -1,53 +1,27 @@
 # Lab 02：C 与内核数据结构
 
-## 对应 Session
+## 代码实验
 
-- [Session 02：C 与内核数据结构](../../sessions/session-02-c-and-kernel-structures/session-02-c-and-kernel-structures.md)
+本 lab 要完成 3 个小实验：
 
-## 目标
+- `container_of`：从成员指针找回外层对象。
+- 侵入式双向链表：实现 `list_head` 的初始化、插入、删除。
+- `job_queue`：用链表模拟 job 从 pending 到 done 的状态流转。
 
-把 Session 02 里的“对象嵌入、`container_of`、链表、函数指针表、生命周期控制”真正落到手上。做完这个 lab 之后，你不只是知道这些概念，还应该能用自己的最小示例解释它们，并把它们映射到真实内核源码里。
+实现顺序：
 
-## 开始前先确认
+1. 实现 `container_of`
+2. 实现 `list_init` / `list_empty`
+3. 实现 `list_add` / `list_add_tail` / `list_del`
+4. 实现 `job_queue_init`
+5. 实现 `job_queue_submit` / `job_queue_complete_next`
+6. 实现 pending/done 计数
 
-- 你已经完成 [Lab 01：环境准备与图形栈总览](../../labs/lab-01-environment-and-stack/lab-01-environment-and-stack.md)，至少准备好了 Linux kernel 源码工作区。
-- 你本周的目标是“建立阅读能力”，不是写一个复杂项目。
-- 你会把这次 lab 的输出整理成笔记、图或最小示例，而不是只在脑子里过一遍。
-
-如果你还没有 Linux kernel 源码，建议先回到 Lab 01 补齐环境。
-
-## 任务
-
-### 1. 读一遍 `list_head` 和 `container_of`
-
-先在 Linux kernel 源码里找到并阅读下面这些内容：
-
-- `include/linux/list.h`
-- `container_of` 的定义位置
-- 与 `offsetof` 相关的宏展开方式
-
-阅读时不要只记“宏长什么样”，而要回答下面几个问题：
-
-- `list_head` 为什么只有 `next` 和 `prev` 两个指针，却能管理很多不同类型的对象？
-- 为什么链表节点不是独立对象，而是被嵌入到业务对象里？
-- `container_of` 为什么能从成员地址反推出整个结构体？
-- 如果一个对象里有两个 `list_head` 成员，为什么它就能同时挂进两个不同链表？
-
-建议你至少手写一段自己的解释，而不是照抄宏定义。
-
-### 2. 完成配套代码实验
-
-本 lab 提供了一个最小 C 代码框架，用用户态程序模拟内核里常见的几种结构组织方式：
-
-- 侵入式双向链表
-- `container_of`
-- 对象状态流转
-
-`ops` table 在本节只要求先能识别，不放进代码实验。完整的函数表分发更适合放到后面的 `file_operations`、DRM/KMS `funcs` / `helper_funcs`、scheduler backend ops 里展开。
+## 代码位置
 
 代码目录：
 
-- [code](code/README.md)
+- [code](code/)
 
 需要补充实现的文件：
 
@@ -59,11 +33,19 @@
 
 - [test_lab02.c](code/tests/test_lab02.c)
 
+## 运行测试
+
 在 Windows PowerShell 里运行：
 
 ```powershell
 cd labs\lab-02-c-and-kernel-structures\code
 powershell -ExecutionPolicy Bypass -File .\run-tests.ps1
+```
+
+清理生成文件：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\run-tests.ps1 -Clean
 ```
 
 在 Linux / WSL 里运行：
@@ -73,194 +55,16 @@ cd labs/lab-02-c-and-kernel-structures/code
 make test
 ```
 
+清理生成文件：
+
+```bash
+make clean
+```
+
 Windows 版本会自动寻找 `cl.exe`、`clang` 或 `gcc`。如果本机没有 C 编译器，需要先安装 Visual Studio Build Tools、LLVM/Clang 或 MinGW-w64。
 
-初始代码里保留了 `TODO(student)`，所以第一次运行测试失败是正常的。建议按下面顺序补：
+测试会按小实验打印 `RUN` / `PASS` / `FAIL`，方便你看到当前通过到了哪一块。初始代码里保留了 `TODO(student)`，所以第一次运行测试失败是正常的。
 
-1. 实现 `container_of`
-2. 实现 `list_init` / `list_empty`
-3. 实现 `list_add` / `list_add_tail` / `list_del`
-4. 实现 `job_queue_init`
-5. 实现 `job_queue_submit` / `job_queue_complete_next`
-6. 实现 pending/done 计数
+## 对应 Session
 
-通过测试后，你应该能解释：
-
-- 链表为什么只串 `struct list_head`
-- `container_of` 怎么从 `link` 找回完整 `struct job`
-- `struct job` 怎么在 pending/done 两条链表之间完成状态流转
-
-### 3. 写一个最小侵入式链表示例
-
-写一个最小 C 示例，模拟“对象内部嵌入链表节点”的写法。
-
-建议对象结构：
-
-```c
-struct my_job {
-    int id;
-    int state;
-    struct list_head node;
-};
-```
-
-示例里至少包含这些动作：
-
-- 定义 2 到 3 个对象。
-- 把它们挂进同一个链表。
-- 遍历链表并打印对象字段。
-- 通过成员指针恢复完整对象。
-
-如果你暂时不想直接依赖内核头文件，也可以自己写一个极简版 `list_head` 和 `container_of` 教学示例。重点不是追求和内核一模一样，而是亲手验证“节点在对象里、对象通过节点被统一管理”。
-
-### 4. 识别一个最小 `ops` table
-
-这一节先不要求你写 `ops` table 代码，只要求能识别“函数指针表 = 接口 + 多态”的组织方式。
-
-可以参考下面这个思路：
-
-```c
-struct my_queue;
-
-struct my_queue_ops {
-    void (*submit)(struct my_queue *q, int job_id);
-    void (*dump)(struct my_queue *q);
-};
-
-struct my_queue {
-    const struct my_queue_ops *ops;
-    const char *name;
-};
-```
-
-你要通过这个小片段先确认一件事：
-
-- 在 C 里，即使没有类继承，也能通过“对象 + 函数表”的方式表达公共接口和不同实现。
-
-完整代码实验放到后续更贴近真实场景的位置：
-
-- Session 05 / Lab 05：`file_operations` 和 `ioctl` 入口分发。
-- Session 09 到 10：DRM/KMS 对象的 `funcs` / `helper_funcs`。
-- Session 18 到 19：scheduler backend ops 和 timeout 回调。
-
-### 5. 给一个对象补上生命周期和并发字段
-
-在你自己的最小示例里，再加几类“内核对象常见字段”，不要求真的实现完整并发，只要求你在结构体层面把角色区分清楚。
-
-例如：
-
-- 一个表示生命周期的引用计数字段。
-- 一个表示并发边界的锁字段。
-- 一个表示状态流转的状态位或枚举。
-
-你不一定要把锁真的跑起来，但至少要在笔记里回答：
-
-- 哪些字段属于对象本体？
-- 哪些字段是挂接节点？
-- 哪些字段是生命周期控制？
-- 哪些字段是行为入口？
-- 哪些字段是并发控制？
-
-这一步的重点是训练你“拆结构体”的习惯。
-
-### 6. 跨越指针与特殊修饰符的陷阱
-
-在阅读内核代码前，熟悉一些高频但往往在普通 C 教程里找不到的规范。找出下面几个机制并在笔记里回答：
-
-- 去源码（如 `include/linux/bits.h`）里看一下 `BIT(x)` 和 `GENMASK(h, l)` 是怎么实现的。
-- 查阅 `ERR_PTR`, `IS_ERR`, `PTR_ERR` 的实现（如 `include/linux/err.h`）：如果一个函数返回了 `ERR_PTR(-ENOMEM)`，调用者用 `if (!ptr)` 判断为什么会失败？
-- 为什么读写一个用 `__iomem` 修饰的硬件映射指针不能直接解引用，而一定要用 `readl/writel` 这样的宏？
-- 遇到带有 `__user` 的显存数据指针，内核代码用什么接口去安全地读取它？
-
-### 7. 把练习映射到真实内核/驱动对象
-
-从 Linux kernel 或 DRM 相关代码里，找 2 到 3 个真实对象做小型解剖。
-
-推荐优先看这些名字：
-
-- `drm_device`
-- `drm_crtc`
-- `drm_plane`
-- `drm_gem_object`
-- `dma_fence`
-
-对每个对象，至少回答下面 5 个问题：
-
-1. 这个结构体代表什么实体？
-2. 它嵌入了哪些公共对象或挂接节点？
-3. 它通过什么链表、树、句柄表或私有数据被找到？
-4. 它的行为入口是什么，例如 `ops`、`funcs`、回调？
-5. 它的生命周期和并发边界靠什么保护？
-
-这一部分不要求你一次吃透所有细节，但要求你开始习惯按“对象视角”阅读源码。
-
-### 8. 输出一张“对象组织模式速查图”
-
-把本节学到的内容压缩成你后面会反复翻看的速查图或速记表。
-
-建议至少包含三类模式：
-
-- 公共基类 + 私有扩展
-- 对象 + 挂接节点
-- 对象 + 行为表
-
-每类模式下面最好都写一个真实 GPU 驱动/DRM 对象例子。
-
-## 建议产出形式
-
-你可以任选一种或多种：
-
-- 一篇笔记
-- 一份 Markdown 表格
-- 一张手绘或电子图
-- 一个最小 C 示例文件
-
-重点不是形式，而是你能不能在之后读源码时复用这份产出。
-
-## 推荐记录模板
-
-可以直接按下面这个模板写：
-
-```text
-对象名：
-它代表什么：
-公共基类/嵌入成员：
-挂接节点：
-行为入口：
-生命周期控制：
-并发控制：
-我目前还不理解的点：
-```
-
-## 检查项
-
-- [ ] 我已经读过 `list_head` 和 `container_of` 的实现或等价教学版本
-- [ ] 我已经完成 `code/` 目录里的 TODO，并在 Windows 或 Linux/WSL 上通过测试
-- [ ] 我已经写出一个最小侵入式链表示例
-- [ ] 我已经能识别一个最小 `ops` table 的结构和作用
-- [ ] 我已经能解释为什么“成员地址可以反推出完整对象”
-- [ ] 我已经能解释为什么一个对象能同时挂进多个集合
-- [ ] 我理解 `IS_ERR` 的作用，不再用简单的 `!ptr` 漏掉错误指针
-- [ ] 我明白了 `__iomem` 背后的越界访问含义以及 `BIT`/`GENMASK` 是怎么拼位的
-- [ ] 我已经分析至少 2 个真实内核/DRM 对象
-- [ ] 我已经整理出一份后续读源码可复用的速查材料
-
-## 交付物
-
-- 一篇“结构体、嵌入、`container_of`”笔记
-- 一个通过测试的最小链表和对象状态流转示例
-- 一份“内核对象组织模式速查图”或速查表
-
-## 完成标准
-
-- 你能不用背定义，直接用自己的话解释 `container_of` 在解决什么问题。
-- 你能看懂一个结构体里的字段分别属于“对象本体、挂接节点、行为入口、生命周期控制、并发控制”中的哪一类。
-- 你开始能用同一种方法阅读 `DRM/KMS`、GEM、fence、请求队列这类对象。
-
-## 下一步
-
-完成本 lab 后，进入 [Lab 03：虚拟内存、DMA、IOMMU](../../labs/lab-03-virtual-memory-dma-iommu/lab-03-virtual-memory-dma-iommu.md)：
-
-- 把“对象怎么组织”继续延伸到“地址空间怎么组织”。
-- 开始理解 CPU 地址、物理地址、DMA 地址、IOMMU 映射之间的关系。
-- 为后面的 buffer object、显存管理和命令提交流程继续打基础。
+- [Session 02：C 与内核数据结构](../../sessions/session-02-c-and-kernel-structures/session-02-c-and-kernel-structures.md)

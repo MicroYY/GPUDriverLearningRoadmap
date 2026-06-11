@@ -40,15 +40,18 @@ contents.
   execution-oriented sections such as deliverables, checklists, completion
   criteria, or duplicated lab steps.
 - Treat `labs/` as hands-on execution pages only.
-- Lab files should be organized into two sections:
-  - `代码练习`
-  - `概念解释`
-- In labs, make `代码练习` the main body.
-- The `概念解释` section should ask the reader to explain concepts based on
-  the commands, code, or source paths they just used. Do not re-teach the same
-  knowledge points from the session inside the lab.
+- Lab files should be concise code-experiment pages. Prefer a single
+  `代码实验` section with concrete files, commands, and TODO order.
+- Put the actual experiments and TODO order before references, setup notes,
+  run commands, or background context.
 - Prefer concrete commands, code, file paths, and executable steps in labs
   instead of generic advice.
+- Avoid sections such as deliverables, checklists, completion criteria,
+  recommended output formats, note templates, or next-step summaries unless the
+  user explicitly asks for them.
+- When a lab has a `code/` directory, keep student-facing exercise
+  instructions and run commands in the main lab Markdown file rather than a
+  separate `code/README.md`, unless the user asks for a standalone code README.
 - Avoid repeating the same structure across session and lab. In particular, do
   not duplicate deliverables, checklists, completion standards, or broad
   learning summaries in both places.
