@@ -61,8 +61,9 @@ function Invoke-MsvcBuildAndRun($VsDevCmd) {
 
     $RspLines = @(
         "/nologo",
-        "/std:c11",
+        "/std:clatest",
         "/W4",
+        "/WX",
         "/Iinclude"
     ) + $Sources + @(
         "/Fe`"$Exe`"",
@@ -99,8 +100,9 @@ try {
 
         $Args = @(
             "/nologo",
-            "/std:c11",
+            "/std:clatest",
             "/W4",
+            "/WX",
             "/Iinclude"
         ) + $Sources + @(
             "/Fe$Exe",
@@ -108,7 +110,7 @@ try {
         )
     } else {
         $Args = @(
-            "-std=c11",
+            "-std=c2x",
             "-Wall",
             "-Wextra",
             "-Werror",

@@ -1,5 +1,5 @@
 CC ?= cc
-CFLAGS ?= -std=c11 -Wall -Wextra -Werror -g
+CFLAGS ?= -std=c2x -Wall -Wextra -Werror -g
 CPPFLAGS := -Iinclude
 
 BUILD_DIR := build

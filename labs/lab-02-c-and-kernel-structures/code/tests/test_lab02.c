@@ -237,26 +237,23 @@ static int test_job_queue_complete_with_null_output(void)
 
 typedef int (*test_fn)(void);
 
-static int run_test(const char *name, test_fn fn)
+static int run_test(const char *label, test_fn fn)
 {
     int rc;
 
-    printf("RUN : %s\n", name);
-    fflush(stdout);
-
     rc = fn();
     if (rc != 0) {
-        printf("FAIL: %s\n", name);
+        printf("[FAIL] %s\n", label);
         return 1;
     }
 
-    printf("PASS: %s\n", name);
+    printf("[PASS] %s\n", label);
     return 0;
 }
 
-static int skip_test(const char *name, const char *reason)
+static int skip_test(const char *label, const char *reason)
 {
-    printf("SKIP: %s (%s)\n", name, reason);
+    printf("[SKIP] %s (%s)\n", label, reason);
     return 1;
 }
 
@@ -272,70 +269,70 @@ int main(void)
     int queue_submit_failed = 1;
     int queue_complete_failed = 1;
 
-    container_failed = run_test("container_of recovers the owner object",
+    container_failed = run_test("1. container_of",
                                 test_container_of);
     failures += container_failed;
 
-    list_init_failed = run_test("list_init/list_empty make a circular head",
+    list_init_failed = run_test("2. list_init/list_empty",
                                 test_list_init_and_empty);
     failures += list_init_failed;
 
     if (list_init_failed == 0) {
-        list_add_failed = run_test("list_add inserts at the head",
+        list_add_failed = run_test("3. list_add",
                                    test_list_add_head_order);
         failures += list_add_failed;
-        list_tail_failed = run_test("list_add_tail/list_del preserve links",
+        list_tail_failed = run_test("4. list_add_tail/list_del",
                                     test_list_add_tail_and_delete);
         failures += list_tail_failed;
     } else {
-        skipped += skip_test("list_add inserts at the head",
+        skipped += skip_test("3. list_add",
                              "needs list_init/list_empty");
-        skipped += skip_test("list_add_tail/list_del preserve links",
+        skipped += skip_test("4. list_add_tail/list_del",
                              "needs list_init/list_empty");
     }
 
     if (list_init_failed == 0) {
-        queue_init_failed = run_test("job_queue_init initializes metadata",
+        queue_init_failed = run_test("5. job_queue_init",
                                      test_job_queue_init);
         failures += queue_init_failed;
     } else {
-        skipped += skip_test("job_queue_init initializes metadata",
+        skipped += skip_test("5. job_queue_init",
                              "needs list_init/list_empty");
     }
 
     if (queue_init_failed == 0 && list_add_failed == 0 &&
         list_tail_failed == 0) {
-        queue_submit_failed = run_test("job_queue_submit appends pending jobs",
+        queue_submit_failed = run_test("6. job_queue_submit",
                                        test_job_queue_submit);
         failures += queue_submit_failed;
     } else {
-        skipped += skip_test("job_queue_submit appends pending jobs",
+        skipped += skip_test("6. job_queue_submit",
                              "needs queue init and list add/delete");
     }
 
     if (container_failed == 0 && queue_submit_failed == 0) {
-        queue_complete_failed = run_test("job_queue_complete_next moves jobs",
+        queue_complete_failed = run_test("7. job_queue_complete_next",
                                          test_job_queue_complete_next);
         failures += queue_complete_failed;
     } else {
-        skipped += skip_test("job_queue_complete_next moves jobs",
+        skipped += skip_test("7. job_queue_complete_next",
                              "needs container_of and queue submit");
     }
 
     if (queue_complete_failed == 0) {
-        failures += run_test("job_queue_complete_next accepts NULL output",
+        failures += run_test("8. complete_next with NULL output",
                              test_job_queue_complete_with_null_output);
     } else {
-        skipped += skip_test("job_queue_complete_next accepts NULL output",
+        skipped += skip_test("8. complete_next with NULL output",
                              "needs complete_next");
     }
 
     if (failures != 0) {
-        printf("FAIL: %d Lab 02 test(s) failed, %d skipped\n", failures,
+        printf("\nSummary: %d failed, %d skipped\n", failures,
                skipped);
         return 1;
     }
 
-    printf("PASS: all Lab 02 tests passed\n");
+    printf("\nSummary: all Lab 02 tests passed\n");
     return 0;
 }

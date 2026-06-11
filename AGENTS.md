@@ -44,6 +44,9 @@ contents.
   `代码实验` section with concrete files, commands, and TODO order.
 - Put the actual experiments and TODO order before references, setup notes,
   run commands, or background context.
+- For code labs, include a short `相关代码` pointer under each experiment when
+  helpful, naming the relevant files, structs, and test functions students
+  should inspect before implementing.
 - Prefer concrete commands, code, file paths, and executable steps in labs
   instead of generic advice.
 - Avoid sections such as deliverables, checklists, completion criteria,
